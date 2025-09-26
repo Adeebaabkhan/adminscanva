@@ -4,7 +4,12 @@
 const DOCUMENT_TYPES = {
     'id_card': 'Teacher ID Card',
     'receipt': 'Salary Receipt',
-    'certificate': 'Employment Certificate'
+    'certificate': 'Employment Certificate',
+    'transcript': 'Academic Transcript',
+    'degree': 'Degree Certificate',
+    'course_completion': 'Course Completion Certificate',
+    'training': 'Teacher Training Certificate',
+    'conference': 'Conference Attendance Certificate'
 };
 
 const TEACHER_PROFESSIONS = [
@@ -418,6 +423,21 @@ function generateAllDocuments() {
                                 break;
                             case 'certificate':
                                 documentDataURL = documentGenerator.generateCertificate(teacherData, school);
+                                break;
+                            case 'transcript':
+                                documentDataURL = documentGenerator.generateTranscript(teacherData, school);
+                                break;
+                            case 'degree':
+                                documentDataURL = documentGenerator.generateDegree(teacherData, school);
+                                break;
+                            case 'course_completion':
+                                documentDataURL = documentGenerator.generateCourseCompletion(teacherData, school);
+                                break;
+                            case 'training':
+                                documentDataURL = documentGenerator.generateTraining(teacherData, school);
+                                break;
+                            case 'conference':
+                                documentDataURL = documentGenerator.generateConference(teacherData, school);
                                 break;
                         }
                         

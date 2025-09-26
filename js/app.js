@@ -391,58 +391,62 @@ function generateAllDocuments() {
         totalDocuments += school.documentsCount * selectedDocumentTypes.length;
     });
     
-    let processedDocuments = 0;
+    let docIndex = 0;
     
     schoolsData.forEach((school, schoolIndex) => {
-        for (let docIndex = 0; docIndex < school.documentsCount; docIndex++) {
+        for (let schoolDocIndex = 0; schoolDocIndex < school.documentsCount; schoolDocIndex++) {
             // Generate random teacher data
             const teacherData = generateTeacherData();
             
-            selectedDocumentTypes.forEach((docType, typeIndex) => {
+            selectedDocumentTypes.forEach((docType) => {
                 // Add placeholder immediately for instant feedback
                 const placeholder = createDocumentPlaceholder(docType, teacherData.name, school.name);
                 gridDiv.appendChild(placeholder);
                 
-                // Generate document asynchronously for smooth UX
+                // Generate document immediately in the next animation frame
                 setTimeout(() => {
                     const photo = uploadedPhotos[documentIndex % uploadedPhotos.length] || null;
                     let documentDataURL;
                     
-                    switch (docType) {
-                        case 'id_card':
-                            documentDataURL = documentGenerator.generateIDCard(teacherData, school, photo);
-                            break;
-                        case 'receipt':
-                            documentDataURL = documentGenerator.generateSalaryReceipt(teacherData, school);
-                            break;
-                        case 'certificate':
-                            documentDataURL = documentGenerator.generateCertificate(teacherData, school);
-                            break;
+                    try {
+                        switch (docType) {
+                            case 'id_card':
+                                documentDataURL = documentGenerator.generateIDCard(teacherData, school, photo);
+                                break;
+                            case 'receipt':
+                                documentDataURL = documentGenerator.generateSalaryReceipt(teacherData, school);
+                                break;
+                            case 'certificate':
+                                documentDataURL = documentGenerator.generateCertificate(teacherData, school);
+                                break;
+                        }
+                        
+                        const docData = {
+                            type: docType,
+                            schoolName: school.name,
+                            teacherName: teacherData.name,
+                            country: school.country,
+                            dataURL: documentDataURL,
+                            filename: `${DOCUMENT_TYPES[docType]}_${teacherData.name.replace(/\s+/g, '_')}_${teacherData.id}.jpg`
+                        };
+                        
+                        generatedDocuments.push(docData);
+                        
+                        // Update placeholder with actual document
+                        updateDocumentPlaceholder(placeholder, docData, generatedDocuments.length - 1);
+                        
+                        // Show completion message when all done
+                        if (generatedDocuments.length === totalDocuments) {
+                            showAlert(`🎉 Generated ${totalDocuments} documents instantly!`, 'success');
+                        }
+                    } catch (error) {
+                        console.error('Error generating document:', error);
+                        // Keep placeholder as is, but add error indicator
+                        placeholder.querySelector('.document-preview-placeholder p').textContent = 'Generation failed';
                     }
-                    
-                    const docData = {
-                        type: docType,
-                        schoolName: school.name,
-                        teacherName: teacherData.name,
-                        country: school.country,
-                        dataURL: documentDataURL,
-                        filename: `${DOCUMENT_TYPES[docType]}_${teacherData.name.replace(/\s+/g, '_')}_${teacherData.id}.jpg`
-                    };
-                    
-                    generatedDocuments.push(docData);
-                    
-                    // Update placeholder with actual document
-                    updateDocumentPlaceholder(placeholder, docData, generatedDocuments.length - 1);
-                    
-                    processedDocuments++;
-                    
-                    // Show completion message when all done
-                    if (processedDocuments === totalDocuments) {
-                        showAlert(`🎉 Generated ${totalDocuments} documents instantly!`, 'success');
-                    }
-                }, (processedDocuments * 50)); // Stagger generation for smooth animation
+                }, docIndex * 100); // Stagger by 100ms for smooth animation
                 
-                processedDocuments++;
+                docIndex++;
             });
             
             documentIndex++;

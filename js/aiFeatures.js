@@ -286,12 +286,19 @@ class AIFeatures {
 }
 
 // Initialize AI Features
-const aiFeatures = new AIFeatures();
+let aiFeatures;
+try {
+    aiFeatures = new AIFeatures();
+    console.log('AI Features initialized successfully');
+} catch (error) {
+    console.warn('AI Features initialization failed:', error);
+    aiFeatures = null;
+}
 
 // Safe AI method call utility
 function safeAICall(method, fallback, ...args) {
     try {
-        if (typeof aiFeatures !== 'undefined' && typeof aiFeatures[method] === 'function') {
+        if (aiFeatures && typeof aiFeatures[method] === 'function') {
             const result = aiFeatures[method](...args);
             return result !== null && result !== undefined ? result : fallback;
         }

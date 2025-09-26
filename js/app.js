@@ -460,7 +460,16 @@ function generateAllDocuments() {
                             country: school.country,
                             dataURL: documentDataURL,
                             filename: `${DOCUMENT_TYPES[docType]}_${teacherData.name.replace(/\s+/g, '_')}_${teacherData.id}.jpg`,
-                            qrData: aiFeatures.generateQRCodeData(docType, teacherData, school)
+                            qrData: safeAICall('generateQRCodeData', { 
+                                documentType: docType,
+                                teacherName: teacherData.name,
+                                teacherId: teacherData.id,
+                                schoolName: school.name,
+                                country: school.country,
+                                issueDate: new Date().toISOString(),
+                                verificationId: `${docType.toUpperCase()}-${Date.now()}`,
+                                verificationUrl: `https://verify.teacherdocs.com/${docType}-${Date.now()}`
+                            }, docType, teacherData, school)
                         };
                         
                         generatedDocuments.push(docData);
@@ -474,9 +483,11 @@ function generateAllDocuments() {
                             showAlert(`🎉 Generated ${totalDocuments} professional documents ${timeMessage}!`, 'success');
                         }
                     } catch (error) {
-                        console.error('Error generating document:', error);
-                        // Keep placeholder as is, but add error indicator
-                        placeholder.querySelector('.document-preview-placeholder p').textContent = 'Generation failed';
+                        console.error(`Error generating ${DOCUMENT_TYPES[docType]} document:`, error);
+                        // Keep placeholder as is, but add error indicator with more specific message
+                        const errorMsg = error.message ? `Error: ${error.message}` : `Failed to generate ${DOCUMENT_TYPES[docType]}`;
+                        placeholder.querySelector('.document-preview-placeholder p').textContent = errorMsg;
+                        placeholder.querySelector('.document-preview-placeholder').style.borderColor = '#dc3545';
                     }
                 }, delay);
                 
@@ -549,22 +560,22 @@ function generateTeacherData() {
     const profession = TEACHER_PROFESSIONS[Math.floor(Math.random() * TEACHER_PROFESSIONS.length)];
     const teacherId = generateTeacherId();
     
-    // Use AI-powered name generation based on selected countries
+    // Use AI-powered name generation based on selected countries with fallbacks
     let aiGeneratedName;
     if (schoolsData.length > 0) {
         const randomSchool = schoolsData[Math.floor(Math.random() * schoolsData.length)];
-        aiGeneratedName = aiFeatures.generateCulturalName(randomSchool.country);
+        aiGeneratedName = safeAICall('generateCulturalName', null, randomSchool.country);
     } else {
-        aiGeneratedName = aiFeatures.generateGenericName();
+        aiGeneratedName = safeAICall('generateGenericName', null);
     }
     
     const sampleName = SAMPLE_NAMES[Math.floor(Math.random() * SAMPLE_NAMES.length)];
     const finalName = faker ? faker.person.fullName() : (aiGeneratedName || sampleName);
     
-    // Generate professional email using AI
+    // Generate professional email using AI with fallback
     const schoolName = schoolsData.length > 0 ? schoolsData[0].name : 'Global Academy';
     const country = schoolsData.length > 0 ? schoolsData[0].country : 'USA';
-    const professionalEmail = aiFeatures.generateProfessionalEmail(finalName, schoolName, country);
+    const professionalEmail = safeAICall('generateProfessionalEmail', `${finalName.toLowerCase().replace(' ', '.')}@education.com`, finalName, schoolName, country);
     
     return {
         name: finalName,
@@ -572,8 +583,8 @@ function generateTeacherData() {
         profession: profession,
         email: faker ? faker.internet.email() : professionalEmail,
         phone: faker ? faker.phone.number() : `+1-555-${Math.floor(Math.random() * 9000) + 1000}`,
-        degree: aiFeatures.generateRandomDegree(profession),
-        signature: aiFeatures.generateDigitalSignature(finalName)
+        degree: safeAICall('generateRandomDegree', 'Bachelor of Education', profession),
+        signature: safeAICall('generateDigitalSignature', { text: finalName, font: 'Arial', size: 16, slant: 0, weight: 'normal' }, finalName)
     };
 }
 

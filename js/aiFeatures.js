@@ -287,3 +287,16 @@ class AIFeatures {
 
 // Initialize AI Features
 const aiFeatures = new AIFeatures();
+
+// Safe AI method call utility
+function safeAICall(method, fallback, ...args) {
+    try {
+        if (typeof aiFeatures !== 'undefined' && typeof aiFeatures[method] === 'function') {
+            const result = aiFeatures[method](...args);
+            return result !== null && result !== undefined ? result : fallback;
+        }
+    } catch (error) {
+        console.warn(`AI method ${method} failed:`, error);
+    }
+    return fallback;
+}

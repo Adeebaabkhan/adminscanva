@@ -392,26 +392,3 @@ const COUNTRY_DATA = {
         }
     }
 };
-
-// Teacher professions list
-const TEACHER_PROFESSIONS = [
-    'Primary Teacher',
-    'Math Teacher',
-    'Science Teacher',
-    'English Teacher',
-    'History Teacher',
-    'Art Teacher',
-    'Music Teacher',
-    'Physical Education Teacher',
-    'Computer Science Teacher',
-    'Special Education Teacher',
-    'Vice Principal',
-    'Assistant Principal'
-];
-
-// Document types
-const DOCUMENT_TYPES = {
-    'id_card': 'Teacher ID Card',
-    'receipt': 'Salary Receipt',
-    'certificate': 'Employment Certificate'
-};

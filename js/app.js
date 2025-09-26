@@ -31,6 +31,8 @@ let selectedDocumentTypes = [];
 let schoolsData = [];
 let uploadedPhotos = [];
 let generatedDocuments = [];
+let schoolMode = null; // 'single' or 'multi'
+let performanceMode = true; // Enable performance optimizations
 
 // Initialize Faker with locale
 if (typeof faker !== 'undefined') {
@@ -95,8 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // School Forms Generation
-function generateSchoolForms() {
-    const numSchools = parseInt(document.getElementById('numSchools').value);
+function generateSchoolForms(forceCount = null) {
+    const numSchools = forceCount || parseInt(document.getElementById('numSchools').value);
     const container = document.getElementById('schoolFormsContainer');
     
     container.innerHTML = '';
@@ -381,6 +383,9 @@ function generateAllDocuments() {
     generatedDocuments = [];
     let documentIndex = 0;
     
+    // Performance optimization for single school mode
+    const batchSize = schoolMode === 'single' ? 1 : 3;
+    
     // Initialize the preview grid immediately
     const statusDiv = document.getElementById('generationStatus');
     const documentsDiv = document.getElementById('generatedDocuments');
@@ -398,6 +403,11 @@ function generateAllDocuments() {
     
     let docIndex = 0;
     
+    // Show instant feedback message
+    if (performanceMode) {
+        showAlert(`🚀 Generating ${totalDocuments} documents with AI-powered content...`, 'info');
+    }
+    
     schoolsData.forEach((school, schoolIndex) => {
         for (let schoolDocIndex = 0; schoolDocIndex < school.documentsCount; schoolDocIndex++) {
             // Generate random teacher data
@@ -409,6 +419,8 @@ function generateAllDocuments() {
                 gridDiv.appendChild(placeholder);
                 
                 // Generate document immediately in the next animation frame
+                const delay = performanceMode ? Math.floor(docIndex / batchSize) * 50 : docIndex * 100;
+                
                 setTimeout(() => {
                     const photo = uploadedPhotos[documentIndex % uploadedPhotos.length] || null;
                     let documentDataURL;
@@ -438,7 +450,7 @@ function generateAllDocuments() {
                                 break;
                             case 'conference':
                                 documentDataURL = documentGenerator.generateConference(teacherData, school);
-                                break;
+                                break;  
                         }
                         
                         const docData = {
@@ -447,7 +459,8 @@ function generateAllDocuments() {
                             teacherName: teacherData.name,
                             country: school.country,
                             dataURL: documentDataURL,
-                            filename: `${DOCUMENT_TYPES[docType]}_${teacherData.name.replace(/\s+/g, '_')}_${teacherData.id}.jpg`
+                            filename: `${DOCUMENT_TYPES[docType]}_${teacherData.name.replace(/\s+/g, '_')}_${teacherData.id}.jpg`,
+                            qrData: aiFeatures.generateQRCodeData(docType, teacherData, school)
                         };
                         
                         generatedDocuments.push(docData);
@@ -457,14 +470,15 @@ function generateAllDocuments() {
                         
                         // Show completion message when all done
                         if (generatedDocuments.length === totalDocuments) {
-                            showAlert(`🎉 Generated ${totalDocuments} documents instantly!`, 'success');
+                            const timeMessage = performanceMode ? 'in record time' : 'successfully';
+                            showAlert(`🎉 Generated ${totalDocuments} professional documents ${timeMessage}!`, 'success');
                         }
                     } catch (error) {
                         console.error('Error generating document:', error);
                         // Keep placeholder as is, but add error indicator
                         placeholder.querySelector('.document-preview-placeholder p').textContent = 'Generation failed';
                     }
-                }, docIndex * 100); // Stagger by 100ms for smooth animation
+                }, delay);
                 
                 docIndex++;
             });
@@ -674,3 +688,67 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set initial step
     updateProgressSteps(1);
 });
+
+// School Mode Selection
+function setSchoolMode(mode) {
+    schoolMode = mode;
+    
+    const schoolModeSelection = document.getElementById('schoolModeSelection');
+    const schoolConfiguration = document.getElementById('schoolConfiguration');
+    const selectedModeText = document.getElementById('selectedModeText');
+    const configurationText = document.getElementById('configurationText');
+    const numSchoolsRow = document.getElementById('numSchoolsRow');
+    const numSchoolsLabel = document.getElementById('numSchoolsLabel');
+    const autoGenerateText = document.getElementById('autoGenerateText');
+    const numSchoolsSelect = document.getElementById('numSchools');
+    
+    // Show selected mode
+    schoolModeSelection.classList.remove('d-none');
+    schoolConfiguration.classList.remove('d-none');
+    
+    if (mode === 'single') {
+        selectedModeText.textContent = 'Single School Mode - Optimized for fast generation with one school';
+        configurationText.textContent = 'Enter details for one school. Perfect for focused document generation.';
+        numSchoolsLabel.textContent = 'Documents per School (1-10)';
+        autoGenerateText.textContent = 'Auto Generate School';
+        
+        // Update dropdown for single school mode
+        numSchoolsSelect.innerHTML = `
+            <option value="1">1 Document</option>
+            <option value="2">2 Documents</option>
+            <option value="3" selected>3 Documents</option>
+            <option value="5">5 Documents</option>
+            <option value="10">10 Documents</option>
+        `;
+        
+        // Generate single school form
+        generateSchoolForms(1);
+    } else {
+        selectedModeText.textContent = 'Multi-School Mode - Generate documents for multiple schools';
+        configurationText.textContent = 'Enter details for 3-5 custom schools. All teacher names and data will be generated automatically using realistic information.';
+        numSchoolsLabel.textContent = 'Number of Schools (3-5)';
+        autoGenerateText.textContent = 'Auto Generate All Schools';
+        
+        // Reset dropdown for multi-school mode
+        numSchoolsSelect.innerHTML = `
+            <option value="3" selected>3 Schools</option>
+            <option value="4">4 Schools</option>
+            <option value="5">5 Schools</option>
+        `;
+        
+        // Generate multiple school forms
+        generateSchoolForms();
+    }
+    
+    // Hide mode selection buttons after selection
+    document.querySelectorAll('.card .btn').forEach(btn => {
+        if (btn.onclick.toString().includes('setSchoolMode')) {
+            btn.disabled = true;
+            if (btn.onclick.toString().includes(mode)) {
+                btn.innerHTML = '<i class="fas fa-check me-2"></i>Selected';
+                btn.classList.add('btn-light');
+                btn.classList.remove('btn-primary', 'btn-success');
+            }
+        }
+    });
+}

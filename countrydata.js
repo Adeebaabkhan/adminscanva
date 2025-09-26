@@ -1,0 +1,417 @@
+// Country data with comprehensive information for 17 countries
+const COUNTRY_DATA = {
+    'India': {
+        currency: '₹',
+        currencyCode: 'INR',
+        taxRate: 0.30,
+        pfRate: 0.12,
+        dateFormat: 'DD/MM/YYYY',
+        flag: '🇮🇳',
+        signatories: ['Dr. M. Gupta', 'S. Sharma', 'A. Kumar'],
+        salaryRanges: {
+            'Primary Teacher': [45000, 75000],
+            'Math Teacher': [55000, 85000],
+            'Science Teacher': [55000, 85000],
+            'English Teacher': [50000, 80000],
+            'History Teacher': [50000, 80000],
+            'Art Teacher': [45000, 70000],
+            'Music Teacher': [45000, 70000],
+            'Physical Education Teacher': [50000, 75000],
+            'Computer Science Teacher': [60000, 90000],
+            'Special Education Teacher': [55000, 85000],
+            'Vice Principal': [80000, 120000],
+            'Assistant Principal': [70000, 100000]
+        }
+    },
+    'USA': {
+        currency: '$',
+        currencyCode: 'USD',
+        taxRate: 0.25,
+        pfRate: 0.062,
+        dateFormat: 'MM/DD/YYYY',
+        flag: '🇺🇸',
+        signatories: ['Dr. Emily Johnson', 'J. Smith', 'R. Williams'],
+        salaryRanges: {
+            'Primary Teacher': [45000, 65000],
+            'Math Teacher': [50000, 75000],
+            'Science Teacher': [50000, 75000],
+            'English Teacher': [48000, 70000],
+            'History Teacher': [48000, 70000],
+            'Art Teacher': [45000, 65000],
+            'Music Teacher': [45000, 65000],
+            'Physical Education Teacher': [46000, 68000],
+            'Computer Science Teacher': [55000, 85000],
+            'Special Education Teacher': [50000, 75000],
+            'Vice Principal': [85000, 125000],
+            'Assistant Principal': [75000, 110000]
+        }
+    },
+    'UK': {
+        currency: '£',
+        currencyCode: 'GBP',
+        taxRate: 0.20,
+        pfRate: 0.05,
+        dateFormat: 'DD/MM/YYYY',
+        flag: '🇬🇧',
+        signatories: ['Mr. R. Thompson', 'Mrs. L. Brown', 'Dr. S. Wilson'],
+        salaryRanges: {
+            'Primary Teacher': [35000, 55000],
+            'Math Teacher': [40000, 65000],
+            'Science Teacher': [40000, 65000],
+            'English Teacher': [38000, 60000],
+            'History Teacher': [38000, 60000],
+            'Art Teacher': [35000, 55000],
+            'Music Teacher': [35000, 55000],
+            'Physical Education Teacher': [36000, 58000],
+            'Computer Science Teacher': [45000, 70000],
+            'Special Education Teacher': [40000, 65000],
+            'Vice Principal': [70000, 100000],
+            'Assistant Principal': [60000, 85000]
+        }
+    },
+    'Australia': {
+        currency: 'A$',
+        currencyCode: 'AUD',
+        taxRate: 0.325,
+        pfRate: 0.095,
+        dateFormat: 'DD/MM/YYYY',
+        flag: '🇦🇺',
+        signatories: ['Ms. K. Taylor', 'Dr. B. Anderson', 'R. Harris'],
+        salaryRanges: {
+            'Primary Teacher': [55000, 75000],
+            'Math Teacher': [60000, 85000],
+            'Science Teacher': [60000, 85000],
+            'English Teacher': [58000, 80000],
+            'History Teacher': [58000, 80000],
+            'Art Teacher': [55000, 75000],
+            'Music Teacher': [55000, 75000],
+            'Physical Education Teacher': [56000, 78000],
+            'Computer Science Teacher': [65000, 95000],
+            'Special Education Teacher': [60000, 85000],
+            'Vice Principal': [95000, 135000],
+            'Assistant Principal': [85000, 120000]
+        }
+    },
+    'Canada': {
+        currency: 'C$',
+        currencyCode: 'CAD',
+        taxRate: 0.26,
+        pfRate: 0.058,
+        dateFormat: 'DD/MM/YYYY',
+        flag: '🇨🇦',
+        signatories: ['Dr. C. Clark', 'A. Lee', 'J. Turner'],
+        salaryRanges: {
+            'Primary Teacher': [50000, 70000],
+            'Math Teacher': [55000, 80000],
+            'Science Teacher': [55000, 80000],
+            'English Teacher': [53000, 75000],
+            'History Teacher': [53000, 75000],
+            'Art Teacher': [50000, 70000],
+            'Music Teacher': [50000, 70000],
+            'Physical Education Teacher': [51000, 73000],
+            'Computer Science Teacher': [60000, 90000],
+            'Special Education Teacher': [55000, 80000],
+            'Vice Principal': [90000, 130000],
+            'Assistant Principal': [80000, 115000]
+        }
+    },
+    'Singapore': {
+        currency: 'S$',
+        currencyCode: 'SGD',
+        taxRate: 0.22,
+        pfRate: 0.20,
+        dateFormat: 'DD/MM/YYYY',
+        flag: '🇸🇬',
+        signatories: ['Dr. S. Lim', 'M. Tan', 'Wei Lee'],
+        salaryRanges: {
+            'Primary Teacher': [40000, 60000],
+            'Math Teacher': [45000, 70000],
+            'Science Teacher': [45000, 70000],
+            'English Teacher': [43000, 65000],
+            'History Teacher': [43000, 65000],
+            'Art Teacher': [40000, 60000],
+            'Music Teacher': [40000, 60000],
+            'Physical Education Teacher': [41000, 63000],
+            'Computer Science Teacher': [50000, 80000],
+            'Special Education Teacher': [45000, 70000],
+            'Vice Principal': [80000, 120000],
+            'Assistant Principal': [70000, 105000]
+        }
+    },
+    'Philippines': {
+        currency: '₱',
+        currencyCode: 'PHP',
+        taxRate: 0.32,
+        pfRate: 0.11,
+        dateFormat: 'MM/DD/YYYY',
+        flag: '🇵🇭',
+        signatories: ['Dr. M. Reyes', 'A. Dela Cruz', 'J. Santos'],
+        salaryRanges: {
+            'Primary Teacher': [300000, 450000],
+            'Math Teacher': [350000, 550000],
+            'Science Teacher': [350000, 550000],
+            'English Teacher': [330000, 500000],
+            'History Teacher': [330000, 500000],
+            'Art Teacher': [300000, 450000],
+            'Music Teacher': [300000, 450000],
+            'Physical Education Teacher': [310000, 480000],
+            'Computer Science Teacher': [400000, 650000],
+            'Special Education Teacher': [350000, 550000],
+            'Vice Principal': [600000, 900000],
+            'Assistant Principal': [500000, 750000]
+        }
+    },
+    'Germany': {
+        currency: '€',
+        currencyCode: 'EUR',
+        taxRate: 0.45,
+        pfRate: 0.093,
+        dateFormat: 'DD.MM.YYYY',
+        flag: '🇩🇪',
+        signatories: ['Dr. Hans Mueller', 'Anna Schmidt', 'Michael Weber'],
+        salaryRanges: {
+            'Primary Teacher': [35000, 55000],
+            'Math Teacher': [40000, 65000],
+            'Science Teacher': [40000, 65000],
+            'English Teacher': [38000, 60000],
+            'History Teacher': [38000, 60000],
+            'Art Teacher': [35000, 55000],
+            'Music Teacher': [35000, 55000],
+            'Physical Education Teacher': [36000, 58000],
+            'Computer Science Teacher': [45000, 70000],
+            'Special Education Teacher': [40000, 65000],
+            'Vice Principal': [70000, 100000],
+            'Assistant Principal': [60000, 85000]
+        }
+    },
+    'France': {
+        currency: '€',
+        currencyCode: 'EUR',
+        taxRate: 0.45,
+        pfRate: 0.075,
+        dateFormat: 'DD/MM/YYYY',
+        flag: '🇫🇷',
+        signatories: ['Dr. Pierre Dubois', 'Marie Leroy', 'Jean Martin'],
+        salaryRanges: {
+            'Primary Teacher': [30000, 50000],
+            'Math Teacher': [35000, 60000],
+            'Science Teacher': [35000, 60000],
+            'English Teacher': [33000, 55000],
+            'History Teacher': [33000, 55000],
+            'Art Teacher': [30000, 50000],
+            'Music Teacher': [30000, 50000],
+            'Physical Education Teacher': [31000, 53000],
+            'Computer Science Teacher': [40000, 65000],
+            'Special Education Teacher': [35000, 60000],
+            'Vice Principal': [65000, 95000],
+            'Assistant Principal': [55000, 80000]
+        }
+    },
+    'Japan': {
+        currency: '¥',
+        currencyCode: 'JPY',
+        taxRate: 0.45,
+        pfRate: 0.095,
+        dateFormat: 'YYYY/MM/DD',
+        flag: '🇯🇵',
+        signatories: ['Dr. Tanaka Hiroshi', 'Suzuki Yuki', 'Watanabe Akira'],
+        salaryRanges: {
+            'Primary Teacher': [3500000, 5500000],
+            'Math Teacher': [4000000, 6500000],
+            'Science Teacher': [4000000, 6500000],
+            'English Teacher': [3800000, 6000000],
+            'History Teacher': [3800000, 6000000],
+            'Art Teacher': [3500000, 5500000],
+            'Music Teacher': [3500000, 5500000],
+            'Physical Education Teacher': [3600000, 5800000],
+            'Computer Science Teacher': [4500000, 7000000],
+            'Special Education Teacher': [4000000, 6500000],
+            'Vice Principal': [7000000, 10000000],
+            'Assistant Principal': [6000000, 8500000]
+        }
+    },
+    'South Korea': {
+        currency: '₩',
+        currencyCode: 'KRW',
+        taxRate: 0.40,
+        pfRate: 0.045,
+        dateFormat: 'YYYY/MM/DD',
+        flag: '🇰🇷',
+        signatories: ['Dr. Kim Min-jun', 'Park So-young', 'Lee Jae-ho'],
+        salaryRanges: {
+            'Primary Teacher': [35000000, 55000000],
+            'Math Teacher': [40000000, 65000000],
+            'Science Teacher': [40000000, 65000000],
+            'English Teacher': [38000000, 60000000],
+            'History Teacher': [38000000, 60000000],
+            'Art Teacher': [35000000, 55000000],
+            'Music Teacher': [35000000, 55000000],
+            'Physical Education Teacher': [36000000, 58000000],
+            'Computer Science Teacher': [45000000, 70000000],
+            'Special Education Teacher': [40000000, 65000000],
+            'Vice Principal': [70000000, 100000000],
+            'Assistant Principal': [60000000, 85000000]
+        }
+    },
+    'Brazil': {
+        currency: 'R$',
+        currencyCode: 'BRL',
+        taxRate: 0.275,
+        pfRate: 0.08,
+        dateFormat: 'DD/MM/YYYY',
+        flag: '🇧🇷',
+        signatories: ['Dr. Ana Silva', 'Carlos Santos', 'Maria Oliveira'],
+        salaryRanges: {
+            'Primary Teacher': [35000, 55000],
+            'Math Teacher': [40000, 65000],
+            'Science Teacher': [40000, 65000],
+            'English Teacher': [38000, 60000],
+            'History Teacher': [38000, 60000],
+            'Art Teacher': [35000, 55000],
+            'Music Teacher': [35000, 55000],
+            'Physical Education Teacher': [36000, 58000],
+            'Computer Science Teacher': [45000, 70000],
+            'Special Education Teacher': [40000, 65000],
+            'Vice Principal': [70000, 100000],
+            'Assistant Principal': [60000, 85000]
+        }
+    },
+    'Mexico': {
+        currency: 'MX$',
+        currencyCode: 'MXN',
+        taxRate: 0.30,
+        pfRate: 0.065,
+        dateFormat: 'DD/MM/YYYY',
+        flag: '🇲🇽',
+        signatories: ['Dr. José García', 'Ana Rodríguez', 'Miguel López'],
+        salaryRanges: {
+            'Primary Teacher': [200000, 350000],
+            'Math Teacher': [250000, 450000],
+            'Science Teacher': [250000, 450000],
+            'English Teacher': [230000, 400000],
+            'History Teacher': [230000, 400000],
+            'Art Teacher': [200000, 350000],
+            'Music Teacher': [200000, 350000],
+            'Physical Education Teacher': [210000, 380000],
+            'Computer Science Teacher': [300000, 550000],
+            'Special Education Teacher': [250000, 450000],
+            'Vice Principal': [500000, 750000],
+            'Assistant Principal': [400000, 650000]
+        }
+    },
+    'South Africa': {
+        currency: 'R',
+        currencyCode: 'ZAR',
+        taxRate: 0.45,
+        pfRate: 0.075,
+        dateFormat: 'DD/MM/YYYY',
+        flag: '🇿🇦',
+        signatories: ['Dr. Mandla Ngcobo', 'Sarah van der Merwe', 'David Petersen'],
+        salaryRanges: {
+            'Primary Teacher': [250000, 400000],
+            'Math Teacher': [300000, 500000],
+            'Science Teacher': [300000, 500000],
+            'English Teacher': [280000, 450000],
+            'History Teacher': [280000, 450000],
+            'Art Teacher': [250000, 400000],
+            'Music Teacher': [250000, 400000],
+            'Physical Education Teacher': [260000, 430000],
+            'Computer Science Teacher': [350000, 600000],
+            'Special Education Teacher': [300000, 500000],
+            'Vice Principal': [600000, 900000],
+            'Assistant Principal': [500000, 750000]
+        }
+    },
+    'UAE': {
+        currency: 'AED',
+        currencyCode: 'AED',
+        taxRate: 0.0,
+        pfRate: 0.055,
+        dateFormat: 'DD/MM/YYYY',
+        flag: '🇦🇪',
+        signatories: ['Dr. Ahmed Al-Rashid', 'Fatima Al-Zahra', 'Omar Hassan'],
+        salaryRanges: {
+            'Primary Teacher': [120000, 180000],
+            'Math Teacher': [140000, 220000],
+            'Science Teacher': [140000, 220000],
+            'English Teacher': [130000, 200000],
+            'History Teacher': [130000, 200000],
+            'Art Teacher': [120000, 180000],
+            'Music Teacher': [120000, 180000],
+            'Physical Education Teacher': [125000, 190000],
+            'Computer Science Teacher': [160000, 250000],
+            'Special Education Teacher': [140000, 220000],
+            'Vice Principal': [250000, 350000],
+            'Assistant Principal': [200000, 300000]
+        }
+    },
+    'Netherlands': {
+        currency: '€',
+        currencyCode: 'EUR',
+        taxRate: 0.495,
+        pfRate: 0.065,
+        dateFormat: 'DD-MM-YYYY',
+        flag: '🇳🇱',
+        signatories: ['Dr. Jan de Vries', 'Emma van der Berg', 'Peter Jansen'],
+        salaryRanges: {
+            'Primary Teacher': [35000, 55000],
+            'Math Teacher': [40000, 65000],
+            'Science Teacher': [40000, 65000],
+            'English Teacher': [38000, 60000],
+            'History Teacher': [38000, 60000],
+            'Art Teacher': [35000, 55000],
+            'Music Teacher': [35000, 55000],
+            'Physical Education Teacher': [36000, 58000],
+            'Computer Science Teacher': [45000, 70000],
+            'Special Education Teacher': [40000, 65000],
+            'Vice Principal': [70000, 100000],
+            'Assistant Principal': [60000, 85000]
+        }
+    },
+    'Sweden': {
+        currency: 'kr',
+        currencyCode: 'SEK',
+        taxRate: 0.55,
+        pfRate: 0.07,
+        dateFormat: 'YYYY-MM-DD',
+        flag: '🇸🇪',
+        signatories: ['Dr. Lars Andersson', 'Anna Johansson', 'Erik Nilsson'],
+        salaryRanges: {
+            'Primary Teacher': [350000, 550000],
+            'Math Teacher': [400000, 650000],
+            'Science Teacher': [400000, 650000],
+            'English Teacher': [380000, 600000],
+            'History Teacher': [380000, 600000],
+            'Art Teacher': [350000, 550000],
+            'Music Teacher': [350000, 550000],
+            'Physical Education Teacher': [360000, 580000],
+            'Computer Science Teacher': [450000, 700000],
+            'Special Education Teacher': [400000, 650000],
+            'Vice Principal': [700000, 1000000],
+            'Assistant Principal': [600000, 850000]
+        }
+    }
+};
+
+// Teacher professions list
+const TEACHER_PROFESSIONS = [
+    'Primary Teacher',
+    'Math Teacher',
+    'Science Teacher',
+    'English Teacher',
+    'History Teacher',
+    'Art Teacher',
+    'Music Teacher',
+    'Physical Education Teacher',
+    'Computer Science Teacher',
+    'Special Education Teacher',
+    'Vice Principal',
+    'Assistant Principal'
+];
+
+// Document types
+const DOCUMENT_TYPES = {
+    'id_card': 'Teacher ID Card',
+    'receipt': 'Salary Receipt',
+    'certificate': 'Employment Certificate'
+};

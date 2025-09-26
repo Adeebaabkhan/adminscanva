@@ -8,6 +8,8 @@ const COUNTRY_DATA = {
         dateFormat: 'DD/MM/YYYY',
         flag: '🇮🇳',
         signatories: ['Dr. M. Gupta', 'S. Sharma', 'A. Kumar'],
+        cities: ['Mumbai', 'Delhi', 'Bangalore', 'Chennai', 'Kolkata', 'Hyderabad', 'Pune', 'Ahmedabad', 'Jaipur', 'Surat'],
+        schoolNames: ['Vidya Mandir', 'Saraswati Vidyalaya', 'Modern Public School', 'DPS', 'Kendriya Vidyalaya', 'St. Xavier\'s School', 'DAV Public School', 'Ryan International School', 'Delhi Public School', 'Bal Bharati Public School'],
         salaryRanges: {
             'Primary Teacher': [45000, 75000],
             'Math Teacher': [55000, 85000],
@@ -31,6 +33,8 @@ const COUNTRY_DATA = {
         dateFormat: 'MM/DD/YYYY',
         flag: '🇺🇸',
         signatories: ['Dr. Emily Johnson', 'J. Smith', 'R. Williams'],
+        cities: ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Phoenix', 'Philadelphia', 'San Antonio', 'San Diego', 'Dallas', 'San Jose'],
+        schoolNames: ['Lincoln Elementary', 'Washington High School', 'Roosevelt Middle School', 'Jefferson Academy', 'Madison Public School', 'Hamilton Charter School', 'Franklin Institute', 'Wilson Elementary', 'Adams High School', 'Monroe Academy'],
         salaryRanges: {
             'Primary Teacher': [45000, 65000],
             'Math Teacher': [50000, 75000],
@@ -54,6 +58,8 @@ const COUNTRY_DATA = {
         dateFormat: 'DD/MM/YYYY',
         flag: '🇬🇧',
         signatories: ['Mr. R. Thompson', 'Mrs. L. Brown', 'Dr. S. Wilson'],
+        cities: ['London', 'Birmingham', 'Manchester', 'Glasgow', 'Liverpool', 'Leeds', 'Sheffield', 'Edinburgh', 'Bristol', 'Cardiff'],
+        schoolNames: ['St. Mary\'s Primary', 'Oakwood Academy', 'The Grammar School', 'Hillside Secondary', 'Victoria College', 'Greenfield School', 'Royal Academy', 'St. Paul\'s School', 'Riverside Primary', 'The High School'],
         salaryRanges: {
             'Primary Teacher': [35000, 55000],
             'Math Teacher': [40000, 65000],
@@ -77,6 +83,8 @@ const COUNTRY_DATA = {
         dateFormat: 'DD/MM/YYYY',
         flag: '🇦🇺',
         signatories: ['Ms. K. Taylor', 'Dr. B. Anderson', 'R. Harris'],
+        cities: ['Sydney', 'Melbourne', 'Brisbane', 'Perth', 'Adelaide', 'Gold Coast', 'Canberra', 'Newcastle', 'Wollongong', 'Geelong'],
+        schoolNames: ['Sydney Grammar School', 'Melbourne High School', 'Brisbane State School', 'Perth Primary School', 'Adelaide College', 'Sunshine Coast Academy', 'Capital School', 'Hunter Valley School', 'Coastal Primary', 'Victoria Academy'],
         salaryRanges: {
             'Primary Teacher': [55000, 75000],
             'Math Teacher': [60000, 85000],

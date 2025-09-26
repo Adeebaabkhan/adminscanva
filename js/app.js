@@ -115,11 +115,16 @@ function createSchoolForm(schoolNumber) {
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">School Name</label>
-                <input type="text" class="form-control school-name" placeholder="Enter custom school name" required>
+                <div class="input-group">
+                    <input type="text" class="form-control school-name" placeholder="Enter custom school name" required>
+                    <button class="btn btn-outline-primary" type="button" onclick="autoGenerateSchoolName(this)" title="Auto Generate School Name">
+                        <i class="fas fa-magic"></i>
+                    </button>
+                </div>
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">Country</label>
-                <select class="form-select school-country" required>
+                <select class="form-select school-country" onchange="autoFillLocation(this)" required>
                     <option value="">Select Country</option>
                     ${Object.keys(COUNTRY_DATA).map(country => 
                         `<option value="${country}">${COUNTRY_DATA[country].flag} ${country}</option>`
@@ -128,13 +133,18 @@ function createSchoolForm(schoolNumber) {
             </div>
             <div class="col-md-6 mb-3">
                 <label class="form-label fw-bold">Location/City</label>
-                <input type="text" class="form-control school-location" placeholder="Enter city or location" required>
+                <div class="input-group">
+                    <input type="text" class="form-control school-location" placeholder="Enter city or location" required>
+                    <button class="btn btn-outline-primary" type="button" onclick="autoGenerateLocation(this)" title="Auto Generate Location">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </button>
+                </div>
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Documents per School (1-10)</label>
+                <label class="form-label fw-bold">Documents per School (1-5)</label>
                 <select class="form-select documents-count" required>
-                    ${[1,2,3,4,5,6,7,8,9,10].map(num => 
-                        `<option value="${num}" ${num === 5 ? 'selected' : ''}>${num} Documents</option>`
+                    ${[1,2,3,4,5].map(num => 
+                        `<option value="${num}" ${num === 3 ? 'selected' : ''}>${num} Documents</option>`
                     ).join('')}
                 </select>
             </div>
@@ -142,6 +152,124 @@ function createSchoolForm(schoolNumber) {
     `;
     
     return formDiv;
+}
+
+// Auto-Generation Functions
+function autoGenerateSchoolName(button) {
+    const schoolForm = button.closest('.school-form');
+    const countrySelect = schoolForm.querySelector('.school-country');
+    const nameInput = schoolForm.querySelector('.school-name');
+    
+    const selectedCountry = countrySelect.value;
+    if (!selectedCountry || !COUNTRY_DATA[selectedCountry].schoolNames) {
+        // Use Faker.js or fallback names
+        if (typeof faker !== 'undefined') {
+            nameInput.value = faker.company.name() + ' School';
+        } else {
+            const fallbackNames = ['Springfield Elementary', 'Riverside High School', 'Oakwood Academy', 'Sunset Middle School', 'Pine Valley School'];
+            nameInput.value = fallbackNames[Math.floor(Math.random() * fallbackNames.length)];
+        }
+    } else {
+        // Use country-specific school names
+        const schoolNames = COUNTRY_DATA[selectedCountry].schoolNames;
+        nameInput.value = schoolNames[Math.floor(Math.random() * schoolNames.length)];
+    }
+    
+    // Add visual feedback
+    nameInput.classList.add('is-valid');
+    setTimeout(() => {
+        nameInput.classList.remove('is-valid');
+    }, 1000);
+}
+
+function autoGenerateLocation(button) {
+    const schoolForm = button.closest('.school-form');
+    const countrySelect = schoolForm.querySelector('.school-country');
+    const locationInput = schoolForm.querySelector('.school-location');
+    
+    const selectedCountry = countrySelect.value;
+    if (!selectedCountry || !COUNTRY_DATA[selectedCountry].cities) {
+        // Use Faker.js or fallback locations
+        if (typeof faker !== 'undefined') {
+            locationInput.value = faker.location.city();
+        } else {
+            const fallbackCities = ['Springfield', 'Riverside', 'Oakwood', 'Sunset Valley', 'Pine Ridge'];
+            locationInput.value = fallbackCities[Math.floor(Math.random() * fallbackCities.length)];
+        }
+    } else {
+        // Use country-specific cities
+        const cities = COUNTRY_DATA[selectedCountry].cities;
+        locationInput.value = cities[Math.floor(Math.random() * cities.length)];
+    }
+    
+    // Add visual feedback
+    locationInput.classList.add('is-valid');
+    setTimeout(() => {
+        locationInput.classList.remove('is-valid');
+    }, 1000);
+}
+
+function autoFillLocation(countrySelect) {
+    // Auto-fill location when country changes and location is empty
+    const schoolForm = countrySelect.closest('.school-form');
+    const locationInput = schoolForm.querySelector('.school-location');
+    
+    if (!locationInput.value.trim() && countrySelect.value && COUNTRY_DATA[countrySelect.value].cities) {
+        const cities = COUNTRY_DATA[countrySelect.value].cities;
+        locationInput.value = cities[Math.floor(Math.random() * cities.length)];
+    }
+}
+
+function autoGenerateAllSchools() {
+    const schoolForms = document.querySelectorAll('.school-form');
+    const countries = Object.keys(COUNTRY_DATA);
+    
+    schoolForms.forEach((form, index) => {
+        // Select a random country
+        const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+        const countrySelect = form.querySelector('.school-country');
+        const nameInput = form.querySelector('.school-name');
+        const locationInput = form.querySelector('.school-location');
+        
+        // Set country
+        countrySelect.value = randomCountry;
+        
+        // Generate school name based on country
+        if (COUNTRY_DATA[randomCountry].schoolNames) {
+            const schoolNames = COUNTRY_DATA[randomCountry].schoolNames;
+            nameInput.value = schoolNames[Math.floor(Math.random() * schoolNames.length)];
+        } else if (typeof faker !== 'undefined') {
+            nameInput.value = faker.company.name() + ' School';
+        } else {
+            nameInput.value = `School ${index + 1} Academy`;
+        }
+        
+        // Generate location based on country
+        if (COUNTRY_DATA[randomCountry].cities) {
+            const cities = COUNTRY_DATA[randomCountry].cities;
+            locationInput.value = cities[Math.floor(Math.random() * cities.length)];
+        } else if (typeof faker !== 'undefined') {
+            locationInput.value = faker.location.city();
+        } else {
+            locationInput.value = `City ${index + 1}`;
+        }
+        
+        // Add visual feedback
+        [nameInput, locationInput, countrySelect].forEach(element => {
+            element.classList.add('is-valid');
+        });
+    });
+    
+    // Remove visual feedback after animation
+    setTimeout(() => {
+        schoolForms.forEach(form => {
+            form.querySelectorAll('.is-valid').forEach(element => {
+                element.classList.remove('is-valid');
+            });
+        });
+    }, 1500);
+    
+    showAlert('All schools auto-generated successfully! 🎉', 'success');
 }
 
 // Photo Upload Handling
@@ -235,52 +363,152 @@ function startDocumentGeneration() {
     statusDiv.classList.remove('d-none');
     documentsDiv.classList.add('d-none');
     
-    // Simulate generation process
+    // Show instant generation message
+    statusDiv.querySelector('p').textContent = 'Generating professional documents instantly...';
+    
+    // Generate documents immediately with visual feedback
     setTimeout(() => {
         generateAllDocuments();
-    }, 2000);
+    }, 100); // Minimal delay for smooth UX
 }
 
 function generateAllDocuments() {
     generatedDocuments = [];
     let documentIndex = 0;
     
+    // Initialize the preview grid immediately
+    const statusDiv = document.getElementById('generationStatus');
+    const documentsDiv = document.getElementById('generatedDocuments');
+    const gridDiv = document.getElementById('documentGrid');
+    
+    statusDiv.classList.add('d-none');
+    documentsDiv.classList.remove('d-none');
+    gridDiv.innerHTML = '';
+    
+    // Calculate total documents for progress tracking
+    let totalDocuments = 0;
+    schoolsData.forEach((school) => {
+        totalDocuments += school.documentsCount * selectedDocumentTypes.length;
+    });
+    
+    let docIndex = 0;
+    
     schoolsData.forEach((school, schoolIndex) => {
-        for (let docIndex = 0; docIndex < school.documentsCount; docIndex++) {
+        for (let schoolDocIndex = 0; schoolDocIndex < school.documentsCount; schoolDocIndex++) {
             // Generate random teacher data
             const teacherData = generateTeacherData();
             
-            selectedDocumentTypes.forEach(docType => {
-                const photo = uploadedPhotos[documentIndex % uploadedPhotos.length] || null;
-                let documentDataURL;
+            selectedDocumentTypes.forEach((docType) => {
+                // Add placeholder immediately for instant feedback
+                const placeholder = createDocumentPlaceholder(docType, teacherData.name, school.name);
+                gridDiv.appendChild(placeholder);
                 
-                switch (docType) {
-                    case 'id_card':
-                        documentDataURL = documentGenerator.generateIDCard(teacherData, school, photo);
-                        break;
-                    case 'receipt':
-                        documentDataURL = documentGenerator.generateSalaryReceipt(teacherData, school);
-                        break;
-                    case 'certificate':
-                        documentDataURL = documentGenerator.generateCertificate(teacherData, school);
-                        break;
-                }
+                // Generate document immediately in the next animation frame
+                setTimeout(() => {
+                    const photo = uploadedPhotos[documentIndex % uploadedPhotos.length] || null;
+                    let documentDataURL;
+                    
+                    try {
+                        switch (docType) {
+                            case 'id_card':
+                                documentDataURL = documentGenerator.generateIDCard(teacherData, school, photo);
+                                break;
+                            case 'receipt':
+                                documentDataURL = documentGenerator.generateSalaryReceipt(teacherData, school);
+                                break;
+                            case 'certificate':
+                                documentDataURL = documentGenerator.generateCertificate(teacherData, school);
+                                break;
+                        }
+                        
+                        const docData = {
+                            type: docType,
+                            schoolName: school.name,
+                            teacherName: teacherData.name,
+                            country: school.country,
+                            dataURL: documentDataURL,
+                            filename: `${DOCUMENT_TYPES[docType]}_${teacherData.name.replace(/\s+/g, '_')}_${teacherData.id}.jpg`
+                        };
+                        
+                        generatedDocuments.push(docData);
+                        
+                        // Update placeholder with actual document
+                        updateDocumentPlaceholder(placeholder, docData, generatedDocuments.length - 1);
+                        
+                        // Show completion message when all done
+                        if (generatedDocuments.length === totalDocuments) {
+                            showAlert(`🎉 Generated ${totalDocuments} documents instantly!`, 'success');
+                        }
+                    } catch (error) {
+                        console.error('Error generating document:', error);
+                        // Keep placeholder as is, but add error indicator
+                        placeholder.querySelector('.document-preview-placeholder p').textContent = 'Generation failed';
+                    }
+                }, docIndex * 100); // Stagger by 100ms for smooth animation
                 
-                generatedDocuments.push({
-                    type: docType,
-                    schoolName: school.name,
-                    teacherName: teacherData.name,
-                    country: school.country,
-                    dataURL: documentDataURL,
-                    filename: `${DOCUMENT_TYPES[docType]}_${teacherData.name.replace(/\s+/g, '_')}_${teacherData.id}.jpg`
-                });
+                docIndex++;
             });
             
             documentIndex++;
         }
     });
+}
+
+// Helper functions for live preview
+function createDocumentPlaceholder(docType, teacherName, schoolName) {
+    const docDiv = document.createElement('div');
+    docDiv.className = 'col-md-4 mb-4';
     
-    displayGeneratedDocuments();
+    docDiv.innerHTML = `
+        <div class="document-item">
+            <div class="document-preview-placeholder">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Generating...</span>
+                </div>
+                <p class="mt-2">Creating document...</p>
+            </div>
+            <div class="document-info">
+                <h6>${DOCUMENT_TYPES[docType]}</h6>
+                <small class="text-muted">${teacherName}</small><br>
+                <small class="text-muted">${schoolName}</small>
+                <div class="btn-group mt-2 w-100">
+                    <button class="btn btn-sm btn-outline-secondary" disabled>
+                        <i class="fas fa-eye"></i> Preview
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary" disabled>
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    return docDiv;
+}
+
+function updateDocumentPlaceholder(placeholder, docData, index) {
+    const placeholderDiv = placeholder.querySelector('.document-preview-placeholder');
+    const buttons = placeholder.querySelectorAll('button');
+    
+    // Replace placeholder with actual document image
+    placeholderDiv.outerHTML = `
+        <img src="${docData.dataURL}" class="document-preview" onclick="previewDocument(${index})" alt="${docData.filename}">
+        <div class="document-overlay">
+            <div class="text-center">
+                <i class="fas fa-eye fa-2x mb-2"></i>
+                <p>Click to Preview</p>
+            </div>
+        </div>
+    `;
+    
+    // Enable buttons with proper click handlers
+    buttons[0].disabled = false;
+    buttons[0].onclick = () => previewDocument(index);
+    buttons[1].disabled = false;
+    buttons[1].onclick = () => downloadDocument(index);
+    
+    // Add success animation
+    placeholder.classList.add('fade-in');
 }
 
 function generateTeacherData() {
@@ -301,46 +529,6 @@ function generateTeacherId() {
     const year = new Date().getFullYear();
     const sequence = Math.floor(Math.random() * 9000) + 1000;
     return `TCH${year}${sequence}`;
-}
-
-function displayGeneratedDocuments() {
-    const statusDiv = document.getElementById('generationStatus');
-    const documentsDiv = document.getElementById('generatedDocuments');
-    const gridDiv = document.getElementById('documentGrid');
-    
-    statusDiv.classList.add('d-none');
-    documentsDiv.classList.remove('d-none');
-    
-    gridDiv.innerHTML = '';
-    
-    generatedDocuments.forEach((doc, index) => {
-        const docDiv = document.createElement('div');
-        docDiv.className = 'col-md-4 mb-4';
-        
-        docDiv.innerHTML = `
-            <div class="document-item">
-                <img src="${doc.dataURL}" class="document-preview" onclick="previewDocument(${index})" alt="${doc.filename}">
-                <div class="document-overlay">
-                    <div class="text-center">
-                        <i class="fas fa-eye fa-2x mb-2"></i>
-                        <p>Click to Preview</p>
-                    </div>
-                </div>
-                <div class="document-info">
-                    <h6>${DOCUMENT_TYPES[doc.type]}</h6>
-                    <small class="text-muted">${doc.teacherName}</small><br>
-                    <small class="text-muted">${COUNTRY_DATA[doc.country].flag} ${doc.schoolName}</small>
-                    <div class="mt-2">
-                        <button class="btn btn-primary btn-sm" onclick="downloadDocument(${index})">
-                            <i class="fas fa-download me-1"></i>Download JPG
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
-        
-        gridDiv.appendChild(docDiv);
-    });
 }
 
 // Download Functions

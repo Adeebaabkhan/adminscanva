@@ -534,14 +534,32 @@ function updateDocumentPlaceholder(placeholder, docData, index) {
 function generateTeacherData() {
     const profession = TEACHER_PROFESSIONS[Math.floor(Math.random() * TEACHER_PROFESSIONS.length)];
     const teacherId = generateTeacherId();
+    
+    // Use AI-powered name generation based on selected countries
+    let aiGeneratedName;
+    if (schoolsData.length > 0) {
+        const randomSchool = schoolsData[Math.floor(Math.random() * schoolsData.length)];
+        aiGeneratedName = aiFeatures.generateCulturalName(randomSchool.country);
+    } else {
+        aiGeneratedName = aiFeatures.generateGenericName();
+    }
+    
     const sampleName = SAMPLE_NAMES[Math.floor(Math.random() * SAMPLE_NAMES.length)];
+    const finalName = faker ? faker.person.fullName() : (aiGeneratedName || sampleName);
+    
+    // Generate professional email using AI
+    const schoolName = schoolsData.length > 0 ? schoolsData[0].name : 'Global Academy';
+    const country = schoolsData.length > 0 ? schoolsData[0].country : 'USA';
+    const professionalEmail = aiFeatures.generateProfessionalEmail(finalName, schoolName, country);
     
     return {
-        name: faker ? faker.person.fullName() : sampleName,
+        name: finalName,
         id: teacherId,
         profession: profession,
-        email: faker ? faker.internet.email() : `${sampleName.toLowerCase().replace(' ', '.')}@${teacherId.toLowerCase()}.edu`,
-        phone: faker ? faker.phone.number() : `+1-555-${Math.floor(Math.random() * 9000) + 1000}`
+        email: faker ? faker.internet.email() : professionalEmail,
+        phone: faker ? faker.phone.number() : `+1-555-${Math.floor(Math.random() * 9000) + 1000}`,
+        degree: aiFeatures.generateRandomDegree(profession),
+        signature: aiFeatures.generateDigitalSignature(finalName)
     };
 }
 

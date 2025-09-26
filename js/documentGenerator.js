@@ -408,8 +408,8 @@ class DocumentGenerator {
         ctx.lineTo(this.canvas.width - 50, 290);
         ctx.stroke();
         
-        // Academic details
-        const degree = ['Bachelor of Education', 'Master of Education', 'Bachelor of Science in Education'][Math.floor(Math.random() * 3)];
+        // Academic details - using AI-powered degree suggestions
+        const degree = teacherData.degree || aiFeatures.generateRandomDegree(teacherData.profession);
         const major = teacherData.profession.replace(' Teacher', '');
         ctx.font = '16px Arial';
         ctx.fillStyle = '#444444';
@@ -432,11 +432,11 @@ class DocumentGenerator {
         ctx.fillText('Grade', 600, 410);
         ctx.fillText('Points', 700, 410);
         
-        // Sample courses
+        // Sample courses - using AI-powered course suggestions
         const courses = [
-            { code: 'EDU101', title: 'Educational Psychology', credits: 3, grade: 'A' },
-            { code: 'EDU201', title: 'Curriculum Development', credits: 4, grade: 'A-' },
-            { code: 'EDU301', title: 'Teaching Methods', credits: 3, grade: 'B+' },
+            { code: 'EDU101', title: aiFeatures.generateRandomCourse(teacherData.profession), credits: 3, grade: 'A' },
+            { code: 'EDU201', title: aiFeatures.generateRandomCourse(teacherData.profession), credits: 4, grade: 'A-' },
+            { code: 'EDU301', title: aiFeatures.generateRandomCourse(teacherData.profession), credits: 3, grade: 'B+' },
             { code: 'EDU401', title: 'Assessment & Evaluation', credits: 3, grade: 'A' },
             { code: 'EDU501', title: 'Educational Research', credits: 2, grade: 'A-' },
         ];
@@ -515,8 +515,8 @@ class DocumentGenerator {
         ctx.font = 'bold 48px serif';
         ctx.fillText('CERTIFICATE', this.canvas.width / 2, 220);
         
-        // Degree type
-        const degreeType = ['Bachelor of Education', 'Master of Education', 'Doctor of Education'][Math.floor(Math.random() * 3)];
+        // Degree type - using AI-powered suggestions
+        const degreeType = teacherData.degree || aiFeatures.generateRandomDegree(teacherData.profession);
         ctx.fillStyle = '#333333';
         ctx.font = 'bold 28px serif';
         ctx.fillText(degreeType, this.canvas.width / 2, 270);
@@ -596,15 +596,8 @@ class DocumentGenerator {
         ctx.font = 'bold 24px Arial';
         ctx.fillText(schoolData.name, this.canvas.width / 2, 150);
         
-        // Course information
-        const courses = [
-            'Advanced Teaching Methodologies',
-            'Digital Classroom Management',
-            'Educational Technology Integration',
-            'Student Assessment Strategies',
-            'Inclusive Education Practices'
-        ];
-        const courseName = courses[Math.floor(Math.random() * courses.length)];
+        // Course information - using AI-powered suggestions
+        const courseName = aiFeatures.generateRandomTraining();
         
         ctx.font = '18px Arial';
         ctx.fillStyle = '#666666';
@@ -698,15 +691,8 @@ class DocumentGenerator {
         ctx.font = 'bold 32px Arial';
         ctx.fillText(teacherData.name, this.canvas.width / 2, 290);
         
-        // Training details
-        const trainings = [
-            'Classroom Management Excellence',
-            'Modern Teaching Techniques',
-            'Educational Leadership Development',
-            'Technology in Education',
-            'Special Needs Education Training'
-        ];
-        const trainingName = trainings[Math.floor(Math.random() * trainings.length)];
+        // Training details - using AI-powered suggestions
+        const trainingName = aiFeatures.generateRandomTraining();
         
         ctx.fillStyle = '#333333';
         ctx.font = '18px Arial';
@@ -773,15 +759,8 @@ class DocumentGenerator {
         ctx.textAlign = 'center';
         ctx.fillText('CERTIFICATE OF ATTENDANCE', this.canvas.width / 2, 80);
         
-        // Conference details
-        const conferences = [
-            'International Education Conference 2024',
-            'Modern Teaching Methods Summit',
-            'Educational Technology Workshop',
-            'Global Teachers Forum',
-            'Academic Excellence Symposium'
-        ];
-        const conferenceName = conferences[Math.floor(Math.random() * conferences.length)];
+        // Conference details - using AI-powered suggestions
+        const conferenceName = aiFeatures.generateRandomConference();
         
         ctx.fillStyle = '#1976d2';
         ctx.font = 'bold 24px Arial';
@@ -845,6 +824,39 @@ class DocumentGenerator {
             month: 'long',
             day: 'numeric'
         });
+    }
+
+    // Helper method to render digital signature
+    renderDigitalSignature(ctx, signature, x, y, maxWidth = 200) {
+        if (!signature) return;
+        
+        ctx.save();
+        
+        // Apply signature styling
+        ctx.font = `${signature.weight || 'normal'} ${signature.size || 16}px ${signature.font || 'cursive'}`;
+        ctx.fillStyle = '#1a1a1a';
+        
+        // Apply slant transformation
+        if (signature.slant) {
+            const angle = (signature.slant * Math.PI) / 180;
+            ctx.transform(1, 0, Math.tan(angle), 1, 0, 0);
+        }
+        
+        // Render signature text
+        ctx.textAlign = 'left';
+        ctx.fillText(signature.text, x, y);
+        
+        ctx.restore();
+    }
+
+    // Enhanced QR Code generation placeholder
+    generateQRCode(data) {
+        // This would integrate with an actual QR code library
+        // For now, return a placeholder
+        return {
+            dataURL: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==',
+            data: data
+        };
     }
 }
 

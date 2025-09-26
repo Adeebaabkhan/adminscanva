@@ -1,5 +1,26 @@
 // Main Application Logic
 
+// Constants
+const DOCUMENT_TYPES = {
+    'id_card': 'Teacher ID Card',
+    'receipt': 'Salary Receipt',
+    'certificate': 'Employment Certificate'
+};
+
+const TEACHER_PROFESSIONS = [
+    'Primary Teacher', 'Math Teacher', 'Science Teacher', 'English Teacher',
+    'History Teacher', 'Art Teacher', 'Music Teacher', 'Physical Education Teacher',
+    'Computer Science Teacher', 'Special Education Teacher', 'Vice Principal', 'Assistant Principal'
+];
+
+// Sample names for fallback when Faker.js is not available
+const SAMPLE_NAMES = [
+    'John Smith', 'Emily Johnson', 'Michael Brown', 'Sarah Davis', 'David Wilson',
+    'Lisa Miller', 'James Moore', 'Mary Taylor', 'Robert Anderson', 'Jennifer Thomas',
+    'William Jackson', 'Patricia White', 'Richard Harris', 'Linda Martin', 'Thomas Thompson',
+    'Barbara Garcia', 'Christopher Martinez', 'Susan Robinson', 'Daniel Clark', 'Helen Rodriguez'
+];
+
 let currentStep = 1;
 let selectedDocumentTypes = [];
 let schoolsData = [];
@@ -265,12 +286,13 @@ function generateAllDocuments() {
 function generateTeacherData() {
     const profession = TEACHER_PROFESSIONS[Math.floor(Math.random() * TEACHER_PROFESSIONS.length)];
     const teacherId = generateTeacherId();
+    const sampleName = SAMPLE_NAMES[Math.floor(Math.random() * SAMPLE_NAMES.length)];
     
     return {
-        name: faker ? faker.person.fullName() : `Teacher ${Math.floor(Math.random() * 1000)}`,
+        name: faker ? faker.person.fullName() : sampleName,
         id: teacherId,
         profession: profession,
-        email: faker ? faker.internet.email() : `teacher${teacherId}@school.edu`,
+        email: faker ? faker.internet.email() : `${sampleName.toLowerCase().replace(' ', '.')}@${teacherId.toLowerCase()}.edu`,
         phone: faker ? faker.phone.number() : `+1-555-${Math.floor(Math.random() * 9000) + 1000}`
     };
 }

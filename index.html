@@ -54,7 +54,9 @@
                                 <h4 class="mb-0"><i class="fas fa-file-alt me-2"></i>Select Document Types</h4>
                             </div>
                             <div class="card-body">
-                                <div class="row">
+                                <!-- Original Documents Section -->
+                                <h6 class="text-primary mb-3"><i class="fas fa-briefcase me-2"></i>Professional Documents</h6>
+                                <div class="row mb-4">
                                     <div class="col-md-4 mb-3">
                                         <div class="document-type-card" data-type="id_card">
                                             <div class="card h-100 border-2">
@@ -90,11 +92,96 @@
                                             <div class="card h-100 border-2">
                                                 <div class="card-body text-center">
                                                     <i class="fas fa-certificate fa-3x text-warning mb-3"></i>
-                                                    <h5>Certificates</h5>
+                                                    <h5>Employment Certificates</h5>
                                                     <p class="text-muted">Employment certificates and credentials</p>
                                                     <div class="form-check">
                                                         <input class="form-check-input" type="checkbox" id="doc_certificate" value="certificate">
                                                         <label class="form-check-label" for="doc_certificate">Select</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Academic Documents Section -->
+                                <h6 class="text-info mb-3"><i class="fas fa-graduation-cap me-2"></i>Academic Documents</h6>
+                                <div class="row mb-4">
+                                    <div class="col-md-4 mb-3">
+                                        <div class="document-type-card" data-type="transcript">
+                                            <div class="card h-100 border-2">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-file-alt fa-3x text-info mb-3"></i>
+                                                    <h5>Academic Transcripts</h5>
+                                                    <p class="text-muted">Complete grade history with GPA calculations</p>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="doc_transcript" value="transcript">
+                                                        <label class="form-check-label" for="doc_transcript">Select</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="document-type-card" data-type="degree">
+                                            <div class="card h-100 border-2">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-scroll fa-3x text-purple mb-3"></i>
+                                                    <h5>Degree Certificates</h5>
+                                                    <p class="text-muted">Bachelor's, Master's, PhD with official seals</p>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="doc_degree" value="degree">
+                                                        <label class="form-check-label" for="doc_degree">Select</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <div class="document-type-card" data-type="course_completion">
+                                            <div class="card h-100 border-2">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-award fa-3x text-orange mb-3"></i>
+                                                    <h5>Course Completion</h5>
+                                                    <p class="text-muted">Professional development and training certificates</p>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="doc_course_completion" value="course_completion">
+                                                        <label class="form-check-label" for="doc_course_completion">Select</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Training & Events Section -->
+                                <h6 class="text-secondary mb-3"><i class="fas fa-chalkboard-teacher me-2"></i>Training & Events</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="document-type-card" data-type="training">
+                                            <div class="card h-100 border-2">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-user-graduate fa-3x text-secondary mb-3"></i>
+                                                    <h5>Training Certificates</h5>
+                                                    <p class="text-muted">Professional qualifications and certifications</p>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="doc_training" value="training">
+                                                        <label class="form-check-label" for="doc_training">Select</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="document-type-card" data-type="conference">
+                                            <div class="card h-100 border-2">
+                                                <div class="card-body text-center">
+                                                    <i class="fas fa-users fa-3x text-dark mb-3"></i>
+                                                    <h5>Conference Attendance</h5>
+                                                    <p class="text-muted">Professional events and workshops</p>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="checkbox" id="doc_conference" value="conference">
+                                                        <label class="form-check-label" for="doc_conference">Select</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -121,15 +208,51 @@
                                 <h4 class="mb-0"><i class="fas fa-school me-2"></i>Custom School Details</h4>
                             </div>
                             <div class="card-body">
+                                <!-- School Mode Selection -->
+                                <div class="row mb-4">
+                                    <div class="col-md-6">
+                                        <div class="card border-primary">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-school fa-2x text-primary mb-3"></i>
+                                                <h5>Multi-School Mode</h5>
+                                                <p class="text-muted">Generate documents for 3-5 different schools (Recommended)</p>
+                                                <button class="btn btn-primary" onclick="setSchoolMode('multi')">
+                                                    <i class="fas fa-check-circle me-2"></i>Select Multi-School
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="card border-success">
+                                            <div class="card-body text-center">
+                                                <i class="fas fa-building fa-2x text-success mb-3"></i>
+                                                <h5>Single School Mode</h5>
+                                                <p class="text-muted">Focus on one school for faster generation</p>
+                                                <button class="btn btn-success" onclick="setSchoolMode('single')">
+                                                    <i class="fas fa-lightning-bolt me-2"></i>Select Single School
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="schoolModeSelection" class="d-none">
+                                    <div class="alert alert-info text-center">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <span id="selectedModeText"></span>
+                                    </div>
+                                </div>
+
+                                <div id="schoolConfiguration" class="d-none">
                                 <div class="alert alert-info">
                                     <i class="fas fa-info-circle me-2"></i>
-                                    Enter details for 3-5 custom schools. All teacher names and data will be generated automatically using realistic information.
+                                    <span id="configurationText">Enter details for 3-5 custom schools. All teacher names and data will be generated automatically using realistic information.</span>
                                 </div>
 
                                 <!-- Number of Schools -->
-                                <div class="row mb-4">
+                                <div class="row mb-4" id="numSchoolsRow">
                                     <div class="col-md-6">
-                                        <label class="form-label fw-bold">Number of Schools (3-5)</label>
+                                        <label class="form-label fw-bold" id="numSchoolsLabel">Number of Schools (3-5)</label>
                                         <select class="form-select" id="numSchools" onchange="generateSchoolForms()">
                                             <option value="3">3 Schools</option>
                                             <option value="4">4 Schools</option>
@@ -138,7 +261,7 @@
                                     </div>
                                     <div class="col-md-6 d-flex align-items-end">
                                         <button class="btn btn-warning btn-lg" onclick="autoGenerateAllSchools()" title="Auto-fill all school forms instantly">
-                                            <i class="fas fa-magic me-2"></i>Auto Generate All Schools
+                                            <i class="fas fa-magic me-2"></i><span id="autoGenerateText">Auto Generate All Schools</span>
                                         </button>
                                     </div>
                                 </div>
@@ -178,6 +301,7 @@
                                         Generate Documents <i class="fas fa-cogs ms-2"></i>
                                     </button>
                                 </div>
+                                </div> <!-- Close schoolConfiguration div -->
                             </div>
                         </div>
                     </div>
@@ -237,7 +361,7 @@
         <footer class="bg-dark text-light mt-5 py-4">
             <div class="container text-center">
                 <p class="mb-0">&copy; 2025 Teacher Document Generator • Custom Schools Only • Professional Quality</p>
-                <p class="mb-0"><small>Supports 17 countries with realistic calculations and professional formatting</small></p>
+                <p class="mb-0"><small>Supports 49 countries with realistic calculations and professional formatting</small></p>
             </div>
         </footer>
     </div>
@@ -269,6 +393,7 @@
     </script>
     <script src="js/faker-local.js"></script>
     <script src="js/countryData.js"></script>
+    <script src="js/aiFeatures.js"></script>
     <script src="js/documentGenerator.js"></script>
     <script src="js/app.js"></script>
 </body>

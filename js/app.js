@@ -4,7 +4,12 @@
 const DOCUMENT_TYPES = {
     'id_card': 'Teacher ID Card',
     'receipt': 'Salary Receipt',
-    'certificate': 'Employment Certificate'
+    'certificate': 'Employment Certificate',
+    'transcript': 'Academic Transcript',
+    'degree': 'Degree Certificate',
+    'course_completion': 'Course Completion Certificate',
+    'training': 'Teacher Training Certificate',
+    'conference': 'Conference Attendance Certificate'
 };
 
 const TEACHER_PROFESSIONS = [
@@ -26,6 +31,8 @@ let selectedDocumentTypes = [];
 let schoolsData = [];
 let uploadedPhotos = [];
 let generatedDocuments = [];
+let schoolMode = null; // 'single' or 'multi'
+let performanceMode = true; // Enable performance optimizations
 
 // Initialize Faker with locale
 if (typeof faker !== 'undefined') {
@@ -90,8 +97,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // School Forms Generation
-function generateSchoolForms() {
-    const numSchools = parseInt(document.getElementById('numSchools').value);
+function generateSchoolForms(forceCount = null) {
+    const numSchools = forceCount || parseInt(document.getElementById('numSchools').value);
     const container = document.getElementById('schoolFormsContainer');
     
     container.innerHTML = '';
@@ -376,6 +383,9 @@ function generateAllDocuments() {
     generatedDocuments = [];
     let documentIndex = 0;
     
+    // Performance optimization for single school mode
+    const batchSize = schoolMode === 'single' ? 1 : 3;
+    
     // Initialize the preview grid immediately
     const statusDiv = document.getElementById('generationStatus');
     const documentsDiv = document.getElementById('generatedDocuments');
@@ -393,6 +403,11 @@ function generateAllDocuments() {
     
     let docIndex = 0;
     
+    // Show instant feedback message
+    if (performanceMode) {
+        showAlert(`🚀 Generating ${totalDocuments} documents with AI-powered content...`, 'info');
+    }
+    
     schoolsData.forEach((school, schoolIndex) => {
         for (let schoolDocIndex = 0; schoolDocIndex < school.documentsCount; schoolDocIndex++) {
             // Generate random teacher data
@@ -404,6 +419,8 @@ function generateAllDocuments() {
                 gridDiv.appendChild(placeholder);
                 
                 // Generate document immediately in the next animation frame
+                const delay = performanceMode ? Math.floor(docIndex / batchSize) * 50 : docIndex * 100;
+                
                 setTimeout(() => {
                     const photo = uploadedPhotos[documentIndex % uploadedPhotos.length] || null;
                     let documentDataURL;
@@ -419,6 +436,21 @@ function generateAllDocuments() {
                             case 'certificate':
                                 documentDataURL = documentGenerator.generateCertificate(teacherData, school);
                                 break;
+                            case 'transcript':
+                                documentDataURL = documentGenerator.generateTranscript(teacherData, school);
+                                break;
+                            case 'degree':
+                                documentDataURL = documentGenerator.generateDegree(teacherData, school);
+                                break;
+                            case 'course_completion':
+                                documentDataURL = documentGenerator.generateCourseCompletion(teacherData, school);
+                                break;
+                            case 'training':
+                                documentDataURL = documentGenerator.generateTraining(teacherData, school);
+                                break;
+                            case 'conference':
+                                documentDataURL = documentGenerator.generateConference(teacherData, school);
+                                break;  
                         }
                         
                         const docData = {
@@ -427,7 +459,8 @@ function generateAllDocuments() {
                             teacherName: teacherData.name,
                             country: school.country,
                             dataURL: documentDataURL,
-                            filename: `${DOCUMENT_TYPES[docType]}_${teacherData.name.replace(/\s+/g, '_')}_${teacherData.id}.jpg`
+                            filename: `${DOCUMENT_TYPES[docType]}_${teacherData.name.replace(/\s+/g, '_')}_${teacherData.id}.jpg`,
+                            qrData: aiFeatures.generateQRCodeData(docType, teacherData, school)
                         };
                         
                         generatedDocuments.push(docData);
@@ -437,14 +470,15 @@ function generateAllDocuments() {
                         
                         // Show completion message when all done
                         if (generatedDocuments.length === totalDocuments) {
-                            showAlert(`🎉 Generated ${totalDocuments} documents instantly!`, 'success');
+                            const timeMessage = performanceMode ? 'in record time' : 'successfully';
+                            showAlert(`🎉 Generated ${totalDocuments} professional documents ${timeMessage}!`, 'success');
                         }
                     } catch (error) {
                         console.error('Error generating document:', error);
                         // Keep placeholder as is, but add error indicator
                         placeholder.querySelector('.document-preview-placeholder p').textContent = 'Generation failed';
                     }
-                }, docIndex * 100); // Stagger by 100ms for smooth animation
+                }, delay);
                 
                 docIndex++;
             });
@@ -514,14 +548,32 @@ function updateDocumentPlaceholder(placeholder, docData, index) {
 function generateTeacherData() {
     const profession = TEACHER_PROFESSIONS[Math.floor(Math.random() * TEACHER_PROFESSIONS.length)];
     const teacherId = generateTeacherId();
+    
+    // Use AI-powered name generation based on selected countries
+    let aiGeneratedName;
+    if (schoolsData.length > 0) {
+        const randomSchool = schoolsData[Math.floor(Math.random() * schoolsData.length)];
+        aiGeneratedName = aiFeatures.generateCulturalName(randomSchool.country);
+    } else {
+        aiGeneratedName = aiFeatures.generateGenericName();
+    }
+    
     const sampleName = SAMPLE_NAMES[Math.floor(Math.random() * SAMPLE_NAMES.length)];
+    const finalName = faker ? faker.person.fullName() : (aiGeneratedName || sampleName);
+    
+    // Generate professional email using AI
+    const schoolName = schoolsData.length > 0 ? schoolsData[0].name : 'Global Academy';
+    const country = schoolsData.length > 0 ? schoolsData[0].country : 'USA';
+    const professionalEmail = aiFeatures.generateProfessionalEmail(finalName, schoolName, country);
     
     return {
-        name: faker ? faker.person.fullName() : sampleName,
+        name: finalName,
         id: teacherId,
         profession: profession,
-        email: faker ? faker.internet.email() : `${sampleName.toLowerCase().replace(' ', '.')}@${teacherId.toLowerCase()}.edu`,
-        phone: faker ? faker.phone.number() : `+1-555-${Math.floor(Math.random() * 9000) + 1000}`
+        email: faker ? faker.internet.email() : professionalEmail,
+        phone: faker ? faker.phone.number() : `+1-555-${Math.floor(Math.random() * 9000) + 1000}`,
+        degree: aiFeatures.generateRandomDegree(profession),
+        signature: aiFeatures.generateDigitalSignature(finalName)
     };
 }
 
@@ -636,3 +688,67 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set initial step
     updateProgressSteps(1);
 });
+
+// School Mode Selection
+function setSchoolMode(mode) {
+    schoolMode = mode;
+    
+    const schoolModeSelection = document.getElementById('schoolModeSelection');
+    const schoolConfiguration = document.getElementById('schoolConfiguration');
+    const selectedModeText = document.getElementById('selectedModeText');
+    const configurationText = document.getElementById('configurationText');
+    const numSchoolsRow = document.getElementById('numSchoolsRow');
+    const numSchoolsLabel = document.getElementById('numSchoolsLabel');
+    const autoGenerateText = document.getElementById('autoGenerateText');
+    const numSchoolsSelect = document.getElementById('numSchools');
+    
+    // Show selected mode
+    schoolModeSelection.classList.remove('d-none');
+    schoolConfiguration.classList.remove('d-none');
+    
+    if (mode === 'single') {
+        selectedModeText.textContent = 'Single School Mode - Optimized for fast generation with one school';
+        configurationText.textContent = 'Enter details for one school. Perfect for focused document generation.';
+        numSchoolsLabel.textContent = 'Documents per School (1-10)';
+        autoGenerateText.textContent = 'Auto Generate School';
+        
+        // Update dropdown for single school mode
+        numSchoolsSelect.innerHTML = `
+            <option value="1">1 Document</option>
+            <option value="2">2 Documents</option>
+            <option value="3" selected>3 Documents</option>
+            <option value="5">5 Documents</option>
+            <option value="10">10 Documents</option>
+        `;
+        
+        // Generate single school form
+        generateSchoolForms(1);
+    } else {
+        selectedModeText.textContent = 'Multi-School Mode - Generate documents for multiple schools';
+        configurationText.textContent = 'Enter details for 3-5 custom schools. All teacher names and data will be generated automatically using realistic information.';
+        numSchoolsLabel.textContent = 'Number of Schools (3-5)';
+        autoGenerateText.textContent = 'Auto Generate All Schools';
+        
+        // Reset dropdown for multi-school mode
+        numSchoolsSelect.innerHTML = `
+            <option value="3" selected>3 Schools</option>
+            <option value="4">4 Schools</option>
+            <option value="5">5 Schools</option>
+        `;
+        
+        // Generate multiple school forms
+        generateSchoolForms();
+    }
+    
+    // Hide mode selection buttons after selection
+    document.querySelectorAll('.card .btn').forEach(btn => {
+        if (btn.onclick.toString().includes('setSchoolMode')) {
+            btn.disabled = true;
+            if (btn.onclick.toString().includes(mode)) {
+                btn.innerHTML = '<i class="fas fa-check me-2"></i>Selected';
+                btn.classList.add('btn-light');
+                btn.classList.remove('btn-primary', 'btn-success');
+            }
+        }
+    });
+}

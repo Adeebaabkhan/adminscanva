@@ -7,6 +7,11 @@
     --danger-color: #dc3545;
     --dark-color: #212529;
     --light-color: #f8f9fa;
+    --info-color: #0dcaf0;
+    --purple-color: #6f42c1;
+    --orange-color: #fd7e14;
+    --indigo-color: #6610f2;
+    --teal-color: #20c997;
 }
 
 body {
@@ -368,4 +373,21 @@ body {
     color: var(--success-color);
     font-size: 1.2rem;
     margin-right: 0.5rem;
+}
+
+/* Additional Color Classes */
+.text-purple {
+    color: var(--purple-color) !important;
+}
+
+.text-orange {
+    color: var(--orange-color) !important;
+}
+
+.text-indigo {
+    color: var(--indigo-color) !important;
+}
+
+.text-teal {
+    color: var(--teal-color) !important;
 }

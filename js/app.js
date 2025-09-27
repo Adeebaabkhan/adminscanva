@@ -546,6 +546,41 @@ function updateDocumentPlaceholder(placeholder, docData, index) {
         </div>
     `;
     
+    // Add receipt information display for salary receipts
+    if (docData.type === 'receipt') {
+        const receiptInfoElement = document.createElement('div');
+        receiptInfoElement.className = 'receipt-info-mini mt-2 p-2 bg-light border rounded';
+        receiptInfoElement.innerHTML = `
+            <div class="receipt-mini-row mb-2">
+                <label class="small text-muted fw-bold">School:</label>
+                <div class="d-flex align-items-center">
+                    <span class="copyable-text-mini nano-font flex-grow-1 me-2" data-copy-text="${docData.schoolName}">
+                        ${docData.schoolName.length > 25 ? docData.schoolName.substring(0, 25) + '...' : docData.schoolName}
+                    </span>
+                    <button class="btn btn-sm btn-outline-primary copy-btn-mini" onclick="copyToClipboard('${docData.schoolName}', this)" title="Copy school name">
+                        <i class="fas fa-copy" style="font-size: 0.7rem;"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="receipt-mini-row">
+                <label class="small text-muted fw-bold">Teacher:</label>
+                <div class="d-flex align-items-center">
+                    <span class="copyable-text-mini nano-font flex-grow-1 me-2" data-copy-text="${docData.teacherName}">
+                        ${docData.teacherName}
+                    </span>
+                    <button class="btn btn-sm btn-outline-primary copy-btn-mini" onclick="copyToClipboard('${docData.teacherName}', this)" title="Copy teacher name">
+                        <i class="fas fa-copy" style="font-size: 0.7rem;"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        // Insert receipt info before the buttons
+        const documentInfo = placeholder.querySelector('.document-info');
+        const buttonGroup = documentInfo.querySelector('.btn-group');
+        documentInfo.insertBefore(receiptInfoElement, buttonGroup);
+    }
+    
     // Enable buttons with proper click handlers
     buttons[0].disabled = false;
     buttons[0].onclick = () => previewDocument(index);
@@ -629,6 +664,45 @@ function previewDocument(index) {
 function createPreviewModal(doc) {
     const modal = document.createElement('div');
     modal.className = 'modal fade';
+    
+    // Generate receipt information section for salary receipts
+    const receiptInfoSection = doc.type === 'receipt' ? `
+        <div class="receipt-info-section mt-3 mb-4 p-3 bg-light rounded">
+            <h6 class="text-primary mb-3">
+                <i class="fas fa-info-circle me-2"></i>Receipt Information
+            </h6>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-muted small fw-bold">School Name</label>
+                    <div class="copyable-field d-flex align-items-center">
+                        <span class="copyable-text flex-grow-1 p-2 bg-white rounded border nano-font" data-copy-text="${doc.schoolName}">
+                            ${doc.schoolName}
+                        </span>
+                        <button class="btn btn-outline-primary btn-sm ms-2 copy-btn" onclick="copyToClipboard('${doc.schoolName}', this)" title="Copy school name">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label class="form-label text-muted small fw-bold">Teacher Name</label>
+                    <div class="copyable-field d-flex align-items-center">
+                        <span class="copyable-text flex-grow-1 p-2 bg-white rounded border nano-font" data-copy-text="${doc.teacherName}">
+                            ${doc.teacherName}
+                        </span>
+                        <button class="btn btn-outline-primary btn-sm ms-2 copy-btn" onclick="copyToClipboard('${doc.teacherName}', this)" title="Copy teacher name">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-2">
+                <small class="text-muted">
+                    <i class="fas fa-mouse-pointer me-1"></i>Tap copy buttons to copy information to clipboard
+                </small>
+            </div>
+        </div>
+    ` : '';
+    
     modal.innerHTML = `
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -638,6 +712,7 @@ function createPreviewModal(doc) {
                 </div>
                 <div class="modal-body text-center">
                     <img src="${doc.dataURL}" class="img-fluid" alt="${doc.filename}">
+                    ${receiptInfoSection}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-primary" onclick="downloadDocument(${generatedDocuments.indexOf(doc)})">
@@ -673,6 +748,88 @@ function generateNew() {
 }
 
 // Utility Functions
+function copyToClipboard(text, buttonElement) {
+    // Modern clipboard API with fallback
+    if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(() => {
+            showCopySuccess(buttonElement, text);
+        }).catch(err => {
+            // Fallback for older browsers
+            fallbackCopyToClipboard(text, buttonElement);
+        });
+    } else {
+        // Fallback for older browsers or insecure contexts
+        fallbackCopyToClipboard(text, buttonElement);
+    }
+}
+
+function fallbackCopyToClipboard(text, buttonElement) {
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.left = '-999999px';
+    textArea.style.top = '-999999px';
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            showCopySuccess(buttonElement, text);
+        } else {
+            showCopyError(buttonElement);
+        }
+    } catch (err) {
+        showCopyError(buttonElement);
+    } finally {
+        document.body.removeChild(textArea);
+    }
+}
+
+function showCopySuccess(buttonElement, text) {
+    const originalIcon = buttonElement.innerHTML;
+    const originalTitle = buttonElement.title;
+    
+    // Show success feedback
+    buttonElement.innerHTML = '<i class="fas fa-check"></i>';
+    buttonElement.classList.remove('btn-outline-primary');
+    buttonElement.classList.add('btn-success');
+    buttonElement.title = 'Copied!';
+    
+    // Show toast-like notification
+    showAlert(`Copied: "${text.length > 50 ? text.substring(0, 50) + '...' : text}"`, 'success');
+    
+    // Reset button after 2 seconds
+    setTimeout(() => {
+        buttonElement.innerHTML = originalIcon;
+        buttonElement.classList.remove('btn-success');
+        buttonElement.classList.add('btn-outline-primary');
+        buttonElement.title = originalTitle;
+    }, 2000);
+}
+
+function showCopyError(buttonElement) {
+    const originalIcon = buttonElement.innerHTML;
+    const originalTitle = buttonElement.title;
+    
+    // Show error feedback
+    buttonElement.innerHTML = '<i class="fas fa-times"></i>';
+    buttonElement.classList.remove('btn-outline-primary');
+    buttonElement.classList.add('btn-danger');
+    buttonElement.title = 'Copy failed';
+    
+    showAlert('Failed to copy to clipboard. Please try again.', 'warning');
+    
+    // Reset button after 2 seconds
+    setTimeout(() => {
+        buttonElement.innerHTML = originalIcon;
+        buttonElement.classList.remove('btn-danger');
+        buttonElement.classList.add('btn-outline-primary');
+        buttonElement.title = originalTitle;
+    }, 2000);
+}
+
 function showAlert(message, type = 'info') {
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show`;

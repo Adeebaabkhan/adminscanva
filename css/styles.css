@@ -201,10 +201,12 @@ body {
     justify-content: center;
     opacity: 0;
     transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 .document-item:hover .document-overlay {
     opacity: 1;
+    pointer-events: auto;
 }
 
 .document-info {
@@ -390,4 +392,148 @@ body {
 
 .text-teal {
     color: var(--teal-color) !important;
+}
+
+/* Receipt Information Styles */
+.receipt-info-section {
+    border: 1px solid #e3e6f0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.copyable-field {
+    transition: all 0.3s ease;
+}
+
+.copyable-field:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.copyable-text {
+    word-wrap: break-word;
+    min-height: 36px;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.copyable-text:hover {
+    background-color: #f8f9fa !important;
+}
+
+.copy-btn {
+    transition: all 0.3s ease;
+    min-width: 36px;
+    height: 36px;
+}
+
+.copy-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Nano-style font for better readability */
+.nano-font {
+    font-family: 'SF Mono', 'Monaco', 'Monaco', 'Inconsolata', 'Roboto Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    line-height: 1.4;
+}
+
+/* Mini receipt info styles for document cards */
+.receipt-info-mini {
+    font-size: 0.75rem;
+    border: 1px solid #e3e6f0 !important;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    position: relative;
+    z-index: 10;
+}
+
+.receipt-mini-row {
+    line-height: 1.2;
+}
+
+.receipt-mini-row label {
+    font-size: 0.65rem;
+    margin-bottom: 2px;
+    display: block;
+}
+
+.copyable-text-mini {
+    font-size: 0.7rem;
+    padding: 2px 4px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 3px;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.copyable-text-mini:hover {
+    background: rgba(255, 255, 255, 1);
+    border-color: #007bff;
+}
+
+.copy-btn-mini {
+    padding: 2px 6px !important;
+    min-width: 20px;
+    height: 20px;
+    font-size: 0.6rem;
+    border-width: 1px;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 20;
+}
+
+.copy-btn-mini:hover {
+    transform: scale(1.1);
+}
+
+/* Mobile responsiveness for receipt info */
+@media (max-width: 768px) {
+    .copyable-field {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .copy-btn {
+        margin-top: 8px;
+        margin-left: 0 !important;
+        width: 100%;
+    }
+    
+    .receipt-info-mini {
+        font-size: 0.7rem;
+    }
+    
+    .copyable-text-mini {
+        font-size: 0.65rem;
+    }
+    
+    .nano-font {
+        font-size: 0.8rem;
+    }
+}
+
+/* Copy success/error animations */
+@keyframes copySuccess {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes copyError {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+    100% { transform: translateX(0); }
+}
+
+.btn-success {
+    animation: copySuccess 0.6s ease-in-out;
+}
+
+.btn-danger {
+    animation: copyError 0.6s ease-in-out;
 }

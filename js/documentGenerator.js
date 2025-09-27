@@ -408,8 +408,8 @@ class DocumentGenerator {
         ctx.lineTo(this.canvas.width - 50, 290);
         ctx.stroke();
         
-        // Academic details - using AI-powered degree suggestions
-        const degree = teacherData.degree || aiFeatures.generateRandomDegree(teacherData.profession);
+        // Academic details - using AI-powered degree suggestions with fallback
+        const degree = teacherData.degree || safeAICall('generateRandomDegree', 'Bachelor of Education', teacherData.profession);
         const major = teacherData.profession.replace(' Teacher', '');
         ctx.font = '16px Arial';
         ctx.fillStyle = '#444444';
@@ -432,11 +432,11 @@ class DocumentGenerator {
         ctx.fillText('Grade', 600, 410);
         ctx.fillText('Points', 700, 410);
         
-        // Sample courses - using AI-powered course suggestions
+        // Sample courses - using AI-powered course suggestions with fallbacks
         const courses = [
-            { code: 'EDU101', title: aiFeatures.generateRandomCourse(teacherData.profession), credits: 3, grade: 'A' },
-            { code: 'EDU201', title: aiFeatures.generateRandomCourse(teacherData.profession), credits: 4, grade: 'A-' },
-            { code: 'EDU301', title: aiFeatures.generateRandomCourse(teacherData.profession), credits: 3, grade: 'B+' },
+            { code: 'EDU101', title: safeAICall('generateRandomCourse', 'Educational Foundations', teacherData.profession), credits: 3, grade: 'A' },
+            { code: 'EDU201', title: safeAICall('generateRandomCourse', 'Teaching Methods', teacherData.profession), credits: 4, grade: 'A-' },
+            { code: 'EDU301', title: safeAICall('generateRandomCourse', 'Curriculum Development', teacherData.profession), credits: 3, grade: 'B+' },
             { code: 'EDU401', title: 'Assessment & Evaluation', credits: 3, grade: 'A' },
             { code: 'EDU501', title: 'Educational Research', credits: 2, grade: 'A-' },
         ];
@@ -515,8 +515,8 @@ class DocumentGenerator {
         ctx.font = 'bold 48px serif';
         ctx.fillText('CERTIFICATE', this.canvas.width / 2, 220);
         
-        // Degree type - using AI-powered suggestions
-        const degreeType = teacherData.degree || aiFeatures.generateRandomDegree(teacherData.profession);
+        // Degree type - using AI-powered suggestions with fallback
+        const degreeType = teacherData.degree || safeAICall('generateRandomDegree', 'Bachelor of Education', teacherData.profession);
         ctx.fillStyle = '#333333';
         ctx.font = 'bold 28px serif';
         ctx.fillText(degreeType, this.canvas.width / 2, 270);
@@ -596,8 +596,8 @@ class DocumentGenerator {
         ctx.font = 'bold 24px Arial';
         ctx.fillText(schoolData.name, this.canvas.width / 2, 150);
         
-        // Course information - using AI-powered suggestions
-        const courseName = aiFeatures.generateRandomTraining();
+        // Course information - using AI-powered suggestions with fallback
+        const courseName = safeAICall('generateRandomTraining', 'Professional Development Course', null);
         
         ctx.font = '18px Arial';
         ctx.fillStyle = '#666666';
@@ -691,8 +691,8 @@ class DocumentGenerator {
         ctx.font = 'bold 32px Arial';
         ctx.fillText(teacherData.name, this.canvas.width / 2, 290);
         
-        // Training details - using AI-powered suggestions
-        const trainingName = aiFeatures.generateRandomTraining();
+        // Training details - using AI-powered suggestions with fallback
+        const trainingName = safeAICall('generateRandomTraining', 'Professional Teaching Methods', null);
         
         ctx.fillStyle = '#333333';
         ctx.font = '18px Arial';
@@ -759,8 +759,8 @@ class DocumentGenerator {
         ctx.textAlign = 'center';
         ctx.fillText('CERTIFICATE OF ATTENDANCE', this.canvas.width / 2, 80);
         
-        // Conference details - using AI-powered suggestions
-        const conferenceName = aiFeatures.generateRandomConference();
+        // Conference details - using AI-powered suggestions with fallback
+        const conferenceName = safeAICall('generateRandomConference', 'Educational Excellence Conference', null);
         
         ctx.fillStyle = '#1976d2';
         ctx.font = 'bold 24px Arial';

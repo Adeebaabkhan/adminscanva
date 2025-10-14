@@ -9,7 +9,16 @@ const DOCUMENT_TYPES = {
     'degree': 'Degree Certificate',
     'course_completion': 'Course Completion Certificate',
     'training': 'Teacher Training Certificate',
-    'conference': 'Conference Attendance Certificate'
+    'conference': 'Conference Attendance Certificate',
+    // ✅ NEW: Nonprofit certificates
+    'nonprofit_12a': '12A Certificate (India)',
+    'nonprofit_80g': '80G Certificate (India)',
+    'nonprofit_darpan': 'NGO Darpan ID (India)',
+    'nonprofit_fcra': 'FCRA Certificate (India)',
+    'nonprofit_trust': 'Trust Deed (India)',
+    'nonprofit_pan': 'PAN Card (India)',
+    'nonprofit_501c3': '501(c)(3) Certificate (USA)',
+    'nonprofit_uk': 'UK Charity Registration'
 };
 
 const TEACHER_PROFESSIONS = [
@@ -33,10 +42,20 @@ let uploadedPhotos = [];
 let generatedDocuments = [];
 let schoolMode = null; // 'single' or 'multi'
 let performanceMode = true; // Enable performance optimizations
+let isNonprofitMode = false; // ✅ NEW: Track if nonprofit certificates are selected
 
 // Initialize Faker with locale
 if (typeof faker !== 'undefined') {
     faker.setLocale('en');
+}
+
+// ✅ NEW: Check if nonprofit certificates are selected
+function checkIfNonprofitMode() {
+    const nonprofitTypes = ['nonprofit_12a', 'nonprofit_80g', 'nonprofit_darpan', 
+                           'nonprofit_fcra', 'nonprofit_trust', 'nonprofit_pan', 
+                           'nonprofit_501c3', 'nonprofit_uk'];
+    isNonprofitMode = selectedDocumentTypes.some(type => nonprofitTypes.includes(type));
+    return isNonprofitMode;
 }
 
 // Step Navigation
@@ -47,9 +66,123 @@ function nextStep(step) {
         updateProgressSteps(step);
         currentStep = step;
         
+        // ✅ NEW: Modify Step 2 based on document type
+        if (step === 2) {
+            checkIfNonprofitMode();
+            if (isNonprofitMode) {
+                updateStep2ForNonprofit();
+            }
+        }
+        
         if (step === 3) {
             startDocumentGeneration();
         }
+    }
+}
+
+// ✅ NEW: Update Step 2 for Nonprofit Certificates
+function updateStep2ForNonprofit() {
+    // Change header title
+    const header = document.querySelector('#content-step2 .card-header h4');
+    if (header) {
+        header.innerHTML = '<i class="fas fa-building me-2"></i>Organization Details';
+    }
+    
+    // Update info alert
+    const configText = document.getElementById('configurationText');
+    if (configText) {
+        configText.textContent = 'Enter details for your nonprofit organization. All information will be used to generate professional certificates.';
+    }
+    
+    // Hide school mode selection for nonprofits
+    const modeSelection = document.querySelector('#content-step2 .row.mb-4');
+    if (modeSelection) {
+        modeSelection.style.display = 'none';
+    }
+    
+    // Show organization configuration immediately
+    const schoolConfig = document.getElementById('schoolConfiguration');
+    if (schoolConfig) {
+        schoolConfig.classList.remove('d-none');
+    }
+    
+    // Update form labels and fields
+    const schoolForms = document.querySelectorAll('.school-form');
+    if (schoolForms.length > 0) {
+        // Clear existing forms and generate nonprofit form
+        generateNonprofitForm();
+    }
+}
+
+// ✅ NEW: Generate Nonprofit Organization Form
+function generateNonprofitForm() {
+    const container = document.getElementById('schoolFormsContainer');
+    container.innerHTML = '';
+    
+    const formDiv = document.createElement('div');
+    formDiv.className = 'school-form fade-in';
+    
+    formDiv.innerHTML = `
+        <div class="school-form-header">
+            <h5 class="mb-0">
+                <i class="fas fa-building me-2"></i>Nonprofit Organization Details
+            </h5>
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Organization Name</label>
+                <input type="text" class="form-control org-name" placeholder="e.g., Education for All Trust" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Country</label>
+                <select class="form-select org-country" required>
+                    <option value="">Select Country</option>
+                    <option value="India">🇮🇳 India</option>
+                    <option value="USA">🇺🇸 USA</option>
+                    <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                    <option value="Canada">🇨🇦 Canada</option>
+                    <option value="Australia">🇦🇺 Australia</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Address</label>
+                <input type="text" class="form-control org-address" placeholder="e.g., 123 Main Street" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">City</label>
+                <input type="text" class="form-control org-city" placeholder="e.g., Mumbai" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">State/Province</label>
+                <input type="text" class="form-control org-state" placeholder="e.g., Maharashtra" required>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">PAN Number (for India)</label>
+                <input type="text" class="form-control org-pan" placeholder="e.g., AAATX1234A">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Registration Number</label>
+                <input type="text" class="form-control org-reg" placeholder="e.g., MH/2024/123456">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label class="form-label fw-bold">Organization Type</label>
+                <input type="text" class="form-control org-type" placeholder="e.g., Public Charitable Trust" value="Public Charitable Trust">
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(formDiv);
+    
+    // Hide photo upload section for nonprofits
+    const photoSection = document.querySelector('.card.mt-4');
+    if (photoSection && photoSection.querySelector('h5')?.textContent.includes('Teacher Photo')) {
+        photoSection.style.display = 'none';
+    }
+    
+    // Hide number of schools row
+    const numSchoolsRow = document.getElementById('numSchoolsRow');
+    if (numSchoolsRow) {
+        numSchoolsRow.style.display = 'none';
     }
 }
 
@@ -82,6 +215,14 @@ function updateProgressSteps(activeStep) {
             step.classList.remove('active');
         }
     });
+    
+    // ✅ NEW: Update step 2 title based on mode
+    const step2Title = document.querySelector('#step2 .step-title');
+    if (step2Title && isNonprofitMode) {
+        step2Title.textContent = 'Organization Details';
+    } else if (step2Title) {
+        step2Title.textContent = 'School Details';
+    }
 }
 
 // Document Type Selection
@@ -328,10 +469,50 @@ function validateCurrentStep() {
             }
             return true;
         case 2:
-            return validateSchoolForms();
+            // ✅ NEW: Different validation for nonprofit vs teacher docs
+            if (checkIfNonprofitMode()) {
+                return validateNonprofitForm();
+            } else {
+                return validateSchoolForms();
+            }
         default:
             return true;
     }
+}
+
+// ✅ NEW: Validate Nonprofit Organization Form
+function validateNonprofitForm() {
+    const form = document.querySelector('.school-form');
+    if (!form) {
+        showAlert('Please fill in the organization details.', 'warning');
+        return false;
+    }
+    
+    const orgName = form.querySelector('.org-name').value.trim();
+    const country = form.querySelector('.org-country').value;
+    const address = form.querySelector('.org-address').value.trim();
+    const city = form.querySelector('.org-city').value.trim();
+    const state = form.querySelector('.org-state').value.trim();
+    
+    if (!orgName || !country || !address || !city || !state) {
+        showAlert('Please fill all required organization fields.', 'warning');
+        return false;
+    }
+    
+    // Store organization data
+    schoolsData = [{
+        name: orgName,
+        country: country,
+        address: address,
+        city: city,
+        state: state,
+        pan: form.querySelector('.org-pan').value.trim(),
+        registrationNo: form.querySelector('.org-reg').value.trim(),
+        type: form.querySelector('.org-type').value.trim() || 'Public Charitable Trust',
+        documentsCount: 1 // One org = one set of certificates
+    }];
+    
+    return true;
 }
 
 function validateSchoolForms() {
@@ -371,7 +552,8 @@ function startDocumentGeneration() {
     documentsDiv.classList.add('d-none');
     
     // Show instant generation message
-    statusDiv.querySelector('p').textContent = 'Generating professional documents instantly...';
+    const messageText = isNonprofitMode ? 'Generating nonprofit certificates...' : 'Generating professional documents instantly...';
+    statusDiv.querySelector('p').textContent = messageText;
     
     // Generate documents immediately with visual feedback
     setTimeout(() => {
@@ -397,16 +579,103 @@ function generateAllDocuments() {
     
     // Calculate total documents for progress tracking
     let totalDocuments = 0;
-    schoolsData.forEach((school) => {
-        totalDocuments += school.documentsCount * selectedDocumentTypes.length;
-    });
+    if (isNonprofitMode) {
+        totalDocuments = selectedDocumentTypes.length;
+    } else {
+        schoolsData.forEach((school) => {
+            totalDocuments += school.documentsCount * selectedDocumentTypes.length;
+        });
+    }
     
     let docIndex = 0;
     
     // Show instant feedback message
     if (performanceMode) {
-        showAlert(`🚀 Generating ${totalDocuments} documents with AI-powered content...`, 'info');
+        const docTypeText = isNonprofitMode ? 'nonprofit certificates' : 'documents';
+        showAlert(`🚀 Generating ${totalDocuments} ${docTypeText} with AI-powered content...`, 'info');
     }
+    
+    // ✅ NEW: Generate nonprofit certificates or teacher documents
+    if (isNonprofitMode) {
+        generateNonprofitCertificates(gridDiv, totalDocuments);
+    } else {
+        generateTeacherDocuments(gridDiv, totalDocuments, batchSize);
+    }
+}
+
+// ✅ NEW: Generate Nonprofit Certificates
+function generateNonprofitCertificates(gridDiv, totalDocuments) {
+    const orgData = schoolsData[0]; // Get organization data
+    
+    selectedDocumentTypes.forEach((docType, index) => {
+        // Add placeholder immediately
+        const placeholder = createDocumentPlaceholder(docType, orgData.name, orgData.city);
+        gridDiv.appendChild(placeholder);
+        
+        setTimeout(() => {
+            let documentDataURL;
+            
+            try {
+                // Call appropriate nonprofit certificate generator
+                switch (docType) {
+                    case 'nonprofit_12a':
+                        documentDataURL = nonprofitGenerator.generate12ACertificate(orgData);
+                        break;
+                    case 'nonprofit_80g':
+                        documentDataURL = nonprofitGenerator.generate80GCertificate(orgData);
+                        break;
+                    case 'nonprofit_darpan':
+                        documentDataURL = nonprofitGenerator.generateNGODarpanID(orgData);
+                        break;
+                    case 'nonprofit_fcra':
+                        documentDataURL = nonprofitGenerator.generateFCRACertificate(orgData);
+                        break;
+                    case 'nonprofit_trust':
+                        documentDataURL = nonprofitGenerator.generateTrustDeed(orgData);
+                        break;
+                    case 'nonprofit_pan':
+                        documentDataURL = nonprofitGenerator.generatePANCard(orgData);
+                        break;
+                    case 'nonprofit_501c3':
+                        documentDataURL = nonprofitGenerator.generate501c3Certificate(orgData);
+                        break;
+                    case 'nonprofit_uk':
+                        documentDataURL = nonprofitGenerator.generateUKCharityRegistration(orgData);
+                        break;
+                }
+                
+                const docData = {
+                    type: docType,
+                    schoolName: orgData.name,
+                    teacherName: orgData.name,
+                    country: orgData.country,
+                    dataURL: documentDataURL,
+                    filename: `${DOCUMENT_TYPES[docType]}_${orgData.name.replace(/\s+/g, '_')}.jpg`
+                };
+                
+                generatedDocuments.push(docData);
+                
+                // Update placeholder with actual document
+                updateDocumentPlaceholder(placeholder, docData, generatedDocuments.length - 1);
+                
+                // Show completion message when all done
+                if (generatedDocuments.length === totalDocuments) {
+                    showAlert(`🎉 Generated ${totalDocuments} nonprofit certificates successfully!`, 'success');
+                }
+            } catch (error) {
+                console.error(`Error generating ${DOCUMENT_TYPES[docType]}:`, error);
+                const errorMsg = `Error: Failed to generate certificate`;
+                placeholder.querySelector('.document-preview-placeholder p').textContent = errorMsg;
+                placeholder.querySelector('.document-preview-placeholder').style.borderColor = '#dc3545';
+            }
+        }, index * 100);
+    });
+}
+
+// Generate Teacher Documents (existing function)
+function generateTeacherDocuments(gridDiv, totalDocuments, batchSize) {
+    let docIndex = 0;
+    let documentIndex = 0;
     
     schoolsData.forEach((school, schoolIndex) => {
         for (let schoolDocIndex = 0; schoolDocIndex < school.documentsCount; schoolDocIndex++) {
@@ -500,7 +769,7 @@ function generateAllDocuments() {
 }
 
 // Helper functions for live preview
-function createDocumentPlaceholder(docType, teacherName, schoolName) {
+function createDocumentPlaceholder(docType, name, location) {
     const docDiv = document.createElement('div');
     docDiv.className = 'col-md-4 mb-4';
     
@@ -514,8 +783,8 @@ function createDocumentPlaceholder(docType, teacherName, schoolName) {
             </div>
             <div class="document-info">
                 <h6>${DOCUMENT_TYPES[docType]}</h6>
-                <small class="text-muted">${teacherName}</small><br>
-                <small class="text-muted">${schoolName}</small>
+                <small class="text-muted">${name}</small><br>
+                <small class="text-muted">${location}</small>
                 <div class="btn-group mt-2 w-100">
                     <button class="btn btn-sm btn-outline-secondary" disabled>
                         <i class="fas fa-eye"></i> Preview
@@ -546,8 +815,8 @@ function updateDocumentPlaceholder(placeholder, docData, index) {
         </div>
     `;
     
-    // Add receipt information display for salary receipts
-    if (docData.type === 'receipt') {
+    // Add receipt information display for salary receipts (teacher docs only)
+    if (docData.type === 'receipt' && !isNonprofitMode) {
         const receiptInfoElement = document.createElement('div');
         receiptInfoElement.className = 'receipt-info-mini mt-2 p-2 bg-light border rounded';
         receiptInfoElement.innerHTML = `
@@ -665,8 +934,8 @@ function createPreviewModal(doc) {
     const modal = document.createElement('div');
     modal.className = 'modal fade';
     
-    // Generate receipt information section for salary receipts
-    const receiptInfoSection = doc.type === 'receipt' ? `
+    // Generate receipt information section for salary receipts (teacher docs only)
+    const receiptInfoSection = (doc.type === 'receipt' && !isNonprofitMode) ? `
         <div class="receipt-info-section mt-3 mb-4 p-3 bg-light rounded">
             <h6 class="text-primary mb-3">
                 <i class="fas fa-info-circle me-2"></i>Receipt Information
@@ -733,6 +1002,7 @@ function generateNew() {
     schoolsData = [];
     uploadedPhotos = [];
     generatedDocuments = [];
+    isNonprofitMode = false; // ✅ NEW: Reset nonprofit mode
     
     // Reset form
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);

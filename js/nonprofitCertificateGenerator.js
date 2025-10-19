@@ -1,4 +1,5 @@
 // Nonprofit Certificate Generator - Complete Implementation
+// Updated for USA with auto-generated EIN and 2-year-old dates
 class NonprofitCertificateGenerator {
     constructor() {
         this.canvas = document.createElement('canvas');
@@ -8,9 +9,7 @@ class NonprofitCertificateGenerator {
     // Helper method to generate a date 2 years old (October 2023)
     getOldDate() {
         // Current date is 2025-10-19, so 2 years ago would be 2023-10-19
-        const oldDate = new Date();
-        oldDate.setFullYear(oldDate.getFullYear() - 2);
-        return oldDate;
+        return new Date('2023-10-19T10:25:42Z');
     }
 
     // Helper method to format dates
@@ -22,14 +21,21 @@ class NonprofitCertificateGenerator {
         });
     }
 
-    // Helper method to generate fake PAN number
+    // Helper method to generate fake USA EIN (Employer Identification Number)
+    generateFakeEIN() {
+        const firstTwo = Math.floor(Math.random() * 90) + 10; // 10-99
+        const lastSeven = Math.floor(Math.random() * 9000000) + 1000000; // 1000000-9999999
+        return `${firstTwo}-${lastSeven}`;
+    }
+
+    // Helper method to generate fake PAN number (India)
     generateFakePAN() {
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         const firstThree = 'AAA'; // First 3 letters (typically AAA for trusts)
         const fourthLetter = 'T'; // Fourth letter (T for Trust, P for Person, C for Company, etc.)
-        const fifthLetter = letters.charAt(Math.floor(Math.random() * 26)); // Random letter (first letter of surname/name)
+        const fifthLetter = letters.charAt(Math.floor(Math.random() * 26)); // Random letter
         const fourDigits = String(Math.floor(Math.random() * 9000) + 1000); // 4 random digits
-        const lastLetter = letters.charAt(Math.floor(Math.random() * 26)); // Random letter (check digit)
+        const lastLetter = letters.charAt(Math.floor(Math.random() * 26)); // Random letter
         
         return `${firstThree}${fourthLetter}${fifthLetter}${fourDigits}${lastLetter}`;
     }
@@ -38,6 +44,21 @@ class NonprofitCertificateGenerator {
     generateFake12ARegNo() {
         const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         return `AAATX${Math.floor(Math.random() * 9000) + 1000}${letters.charAt(Math.floor(Math.random() * 26))}`;
+    }
+
+    // Helper method to generate fake UK Charity Number
+    generateFakeUKCharityNumber() {
+        return Math.floor(Math.random() * 900000) + 100000;
+    }
+
+    // Helper method to generate fake Canada BN
+    generateFakeCanadaBN() {
+        return `${Math.floor(Math.random() * 900000000) + 100000000} RR 0001`;
+    }
+
+    // Helper method to generate fake Australia ABN
+    generateFakeAustraliaABN() {
+        return `${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 900) + 100}`;
     }
 
     // ========== INDIA CERTIFICATES ==========
@@ -279,7 +300,7 @@ class NonprofitCertificateGenerator {
         
         ctx.font = '18px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText(`Registration No: ${orgData.registrationNo || 'N/A'}`, 100, 280);
+        ctx.fillText(`Registration No: ${orgData.registrationNo || this.generateFake12ARegNo()}`, 100, 280);
         ctx.fillText(`Type: ${orgData.type || 'Trust/Society/Section 8 Company'}`, 100, 315);
         ctx.fillText(`State: ${orgData.state || 'Maharashtra'}`, 100, 350);
         ctx.fillText(`City: ${orgData.city || 'Mumbai'}`, 100, 385);
@@ -617,8 +638,8 @@ class NonprofitCertificateGenerator {
         ctx.lineWidth = 3;
         ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
         
-        // EIN - AUTO GENERATED
-        const ein = orgData.ein || `${Math.floor(Math.random() * 90) + 10}-${Math.floor(Math.random() * 9000000) + 1000000}`;
+        // EIN - AUTO GENERATED if not provided
+        const ein = orgData.ein || this.generateFakeEIN();
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 20px Arial';
         ctx.fillText(`EIN: ${ein}`, this.canvas.width / 2, 280);
@@ -720,7 +741,7 @@ class NonprofitCertificateGenerator {
         ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
         
         // Registration Number - AUTO GENERATED
-        const charityNo = Math.floor(Math.random() * 900000) + 100000;
+        const charityNo = this.generateFakeUKCharityNumber();
         ctx.fillStyle = '#00247d';
         ctx.font = 'bold 24px Arial';
         ctx.fillText(`Charity Number: ${charityNo}`, this.canvas.width / 2, 220);
@@ -810,12 +831,13 @@ class NonprofitCertificateGenerator {
         ctx.fillStyle = '#8B0000';
         ctx.font = 'bold 26px Arial';
         ctx.fillText('CHARITABLE REGISTRATION', this.canvas.width / 2, 230);
+        ctx.font = 'bold 20px Arial';
         ctx.fillText('ENREGISTREMENT COMME ORGANISME DE BIENFAISANCE', this.canvas.width / 2, 260);
         
         // Registration Number - AUTO GENERATED
-        const bnNo = `${Math.floor(Math.random() * 900000000) + 100000000} RR 0001`;
+        const bnNo = this.generateFakeCanadaBN();
         ctx.fillStyle = '#000000';
-        ctx.font = 'bold 20px Arial';
+        ctx.font = 'bold 18px Arial';
         ctx.fillText(`Registration Number / Numéro d'enregistrement: ${bnNo}`, this.canvas.width / 2, 320);
         
         // Organization Details
@@ -827,7 +849,7 @@ class NonprofitCertificateGenerator {
         
         ctx.font = '18px Arial';
         ctx.fillText(`Address / Adresse: ${orgData.address}`, 80, 450);
-        ctx.fillText(`City / Ville: ${orgData.city || 'Toronto'}, Province: ${orgData.province || 'ON'}`, 80, 485);
+        ctx.fillText(`City / Ville: ${orgData.city || 'Toronto'}, Province: ${orgData.province || orgData.state || 'ON'}`, 80, 485);
         
         // Registration Details - Use old date
         const oldDate = this.getOldDate();
@@ -894,7 +916,7 @@ class NonprofitCertificateGenerator {
         ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
         
         // ABN - AUTO GENERATED
-        const abn = `${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 900) + 100}`;
+        const abn = this.generateFakeAustraliaABN();
         ctx.fillStyle = '#002664';
         ctx.font = 'bold 22px Arial';
         ctx.fillText(`ABN: ${abn}`, this.canvas.width / 2, 230);

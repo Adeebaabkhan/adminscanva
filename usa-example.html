@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USA 501(c)(3) Certificate Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #003366 0%, #0066cc 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .flag {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .form-section {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .info-box h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+        
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        #preview {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        #preview img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        
+        .verify-section {
+            background: #f5f5f5;
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 10px;
+        }
+        
+        .verify-section h3 {
+            color: #003366;
+            margin-bottom: 15px;
+        }
+        
+        .verify-link {
+            color: #0066cc;
+            text-decoration: none;
+            font-weight: 600;
+            word-break: break-all;
+        }
+        
+        .verify-link:hover {
+            text-decoration: underline;
+        }
+        
+        .state-costs {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .state-costs h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+        
+        .generated-info {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            display: none;
+        }
+        
+        .generated-info.show {
+            display: block;
+        }
+        
+        .generated-info h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+        }
+        
+        .generated-info p {
+            color: #555;
+            margin: 8px 0;
+            font-size: 1.1em;
+        }
+        
+        .generated-info strong {
+            color: #1b5e20;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="flag">🇺🇸</div>
+            <h1>USA 501(c)(3) Certificate Generator</h1>
+            <p>Generate professional tax-exempt certificates with auto-generated EIN</p>
+        </div>
+        
+        <div class="form-section">
+            <div class="info-box">
+                <h3>✅ Why USA 501(c)(3)?</h3>
+                <p><strong>Easy Verification:</strong> Anyone can verify your EIN instantly on IRS.gov</p>
+                <p><strong>Google Ad Grants:</strong> Get $10,000/month in free Google advertising</p>
+                <p><strong>International Trust:</strong> Highest credibility worldwide for donations</p>
+            </div>
+            
+            <form id="usaForm">
+                <div class="form-group">
+                    <label for="orgName">Organization Name *</label>
+                    <input type="text" id="orgName" placeholder="Your Foundation Inc." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="state">State *</label>
+                    <select id="state" required>
+                        <option value="">-- Select Best State --</option>
+                        <option value="DE">Delaware (Cheapest: $50-200)</option>
+                        <option value="WY">Wyoming (No Taxes: $60-200)</option>
+                        <option value="NY">New York (High Trust: $75-300)</option>
+                        <option value="CA">California (Large Donors: $100-800)</option>
+                        <option value="TX">Texas (No State Tax: $100-300)</option>
+                        <option value="FL">Florida (No State Tax: $70-250)</option>
+                        <option value="NV">Nevada (Privacy: $75-300)</option>
+                    </select>
+                </div>
+                
+                <div class="state-costs" id="stateCosts" style="display: none;">
+                    <h4>💰 Estimated Costs for Selected State</h4>
+                    <p id="costInfo"></p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Registered Address *</label>
+                    <input type="text" id="address" placeholder="123 Main Street, Suite 100" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="city">City *</label>
+                    <input type="text" id="city" placeholder="Wilmington" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="ein">EIN (Leave blank for auto-generation)</label>
+                    <input type="text" id="ein" placeholder="Will be auto-generated like: 12-3456789">
+                </div>
+                
+                <div class="info-box">
+                    <h3>📅 Certificate Date</h3>
+                    <p><strong>October 19, 2023</strong> (Exactly 2 years old for established credibility)</p>
+                </div>
+                
+                <button type="submit" class="btn">🎨 Generate 501(c)(3) Certificate</button>
+            </form>
+            
+            <div class="generated-info" id="generatedInfo">
+                <h3>✅ Certificate Generated Successfully!</h3>
+                <p><strong>EIN:</strong> <span id="displayEIN"></span></p>
+                <p><strong>Date:</strong> October 19, 2023 (2 years old)</p>
+                <p><strong>Status:</strong> 501(c)(3) Public Charity</p>
+            </div>
+            
+            <div id="preview"></div>
+            
+            <div class="verify-section">
+                <h3>🔍 Verify Real 501(c)(3) Status</h3>
+                <p>To verify an actual nonprofit's tax-exempt status:</p>
+                <a href="https://www.irs.gov/charities-non-profits/tax-exempt-organization-search" target="_blank" class="verify-link">
+                    https://www.irs.gov/charities-non-profits/tax-exempt-organization-search
+                </a>
+                <br><br>
+                <p><strong>⚠️ Legal Notice:</strong> This generator creates <strong>SAMPLE certificates only</strong>. They have NO legal validity. For real 501(c)(3) status, file Form 1023/1023-EZ with the IRS.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="js/nonprofitCertificateGenerator.js"></script>
+    <script>
+        const stateCosts = {
+            'DE': 'Delaware: $50-200 filing + $50-300 registered agent = $100-500 total (Cheapest & fastest)',
+            'WY': 'Wyoming: $60-200 filing + $50-300 registered agent = $110-500 total (No state taxes)',
+            'NY': 'New York: $75-300 filing + $100-400 registered agent = $175-700 total (High credibility)',
+            'CA': 'California: $100-800 filing + $100-400 registered agent = $200-1200 total (Largest donor base)',
+            'TX': 'Texas: $100-300 filing + $100-300 registered agent = $200-600 total (Business friendly)',
+            'FL': 'Florida: $70-250 filing + $100-300 registered agent = $170-550 total (No state income tax)',
+            'NV': 'Nevada: $75-300 filing + $100-400 registered agent = $175-700 total (Privacy protection)'
+        };
+        
+        const stateAddresses = {
+            'DE': { city: 'Lewes', address: '16192 Coastal Highway, Lewes, DE 19958' },
+            'WY': { city: 'Cheyenne', address: '1712 Pioneer Ave, Suite 1, Cheyenne, WY 82001' },
+            'NY': { city: 'New York', address: '123 Broadway, Suite 500, New York, NY 10006' },
+            'CA': { city: 'Los Angeles', address: '123 Main St, Suite 100, Los Angeles, CA 90012' },
+            'TX': { city: 'Austin', address: '456 Congress Ave, Suite 200, Austin, TX 78701' },
+            'FL': { city: 'Miami', address: '789 Biscayne Blvd, Suite 300, Miami, FL 33132' },
+            'NV': { city: 'Las Vegas', address: '321 Las Vegas Blvd, Suite 400, Las Vegas, NV 89101' }
+        };
+        
+        document.getElementById('state').addEventListener('change', function() {
+            const state = this.value;
+            if (state) {
+                document.getElementById('stateCosts').style.display = 'block';
+                document.getElementById('costInfo').textContent = stateCosts[state];
+                
+                // Auto-fill city and suggest address
+                if (stateAddresses[state]) {
+                    document.getElementById('city').value = stateAddresses[state].city;
+                    document.getElementById('address').placeholder = stateAddresses[state].address;
+                }
+            } else {
+                document.getElementById('stateCosts').style.display = 'none';
+            }
+        });
+        
+        document.getElementById('usaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const orgData = {
+                name: document.getElementById('orgName').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                ein: document.getElementById('ein').value || undefined // Auto-generate if empty
+            };
+            
+            // Generate certificate
+            const certificate = nonprofitGenerator.generate501c3Certificate(orgData);
+            
+            // Get the generated EIN (extract from certificate or generate new one)
+            const displayedEIN = orgData.ein || nonprofitGenerator.generateFakeEIN();
+            
+            // Show generated info
+            document.getElementById('displayEIN').textContent = displayedEIN;
+            document.getElementById('generatedInfo').classList.add('show');
+            
+            // Display certificate
+            const preview = document.getElementById('preview');
+            preview.innerHTML = `
+                <h3 style="color: #003366; margin: 20px 0;">Your USA 501(c)(3) Certificate</h3>
+                <img src="${certificate}" alt="USA 501(c)(3) Certificate">
+                <br><br>
+                <button onclick="downloadCertificate('${certificate}', '${orgData.name}')" class="btn">
+                    ⬇️ Download Certificate
+                </button>
+            `;
+            
+            // Scroll to preview
+            preview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+        
+        function downloadCertificate(dataUrl, orgName) {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `USA-501c3-${orgName.replace(/[^a-z0-9]/gi, '-')}.jpg`;
+            link.click();
+        }
+    </script>
+</body>
+</html>

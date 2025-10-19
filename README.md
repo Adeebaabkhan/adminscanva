@@ -199,6 +199,168 @@ This application is designed to meet Canva's approval requirements:
 5. **Compliant**: Government standards met
 6. **Accessible**: Works on any modern device
 
+## 🌍 Nonprofit Certificate Generators - Countries Without Public Databases
+
+In addition to teacher documents, this application includes nonprofit certificate generators for countries with NO public online databases or limited verification systems, making registration verification difficult:
+
+### 🇰🇪 Kenya - NGO Coordination Board
+
+**Best Option - Google Supported + No Database**
+
+- **Cost**: KES 5,000 (~$38 USD)
+- **Timeline**: 4-8 weeks
+- **Database**: ❌ NO public online database
+- **Google for Nonprofits**: ✅ SUPPORTED
+- **Verification Difficulty**: ⭐⭐⭐⭐⭐ (Impossible online)
+
+**Registration**: https://ngobureau.go.ke
+
+```javascript
+const kenyaOrg = {
+    name: "Your Organization Kenya",
+    address: "P.O. Box 12345",
+    city: "Nairobi",
+    country: "Kenya"
+};
+
+const cert = nonprofitGenerator.generateKenyaNGOCertificate(kenyaOrg);
+// Auto-generates: NGO/R/45678
+// Date: October 19, 2023
+```
+
+### 🇵🇰 Pakistan - SECP Section 42
+
+**Very Low Profile - No Public Database Access**
+
+- **Cost**: PKR 3,000 (~$10 USD)  
+- **Timeline**: 2-4 weeks
+- **Database**: ❌ NOT publicly accessible
+- **Google for Nonprofits**: ⚠️ Limited support
+- **Verification Difficulty**: ⭐⭐⭐⭐⭐ (Database not public)
+
+**Registration**: https://www.secp.gov.pk
+
+```javascript
+const pakistanOrg = {
+    name: "Your Organization Pakistan",
+    address: "123 Main Street",
+    city: "Islamabad/Karachi"
+};
+
+const cert = nonprofitGenerator.generatePakistanSECPCertificate(pakistanOrg);
+// Auto-generates: 0012345
+// Date: October 19, 2023
+```
+
+### 🇳🇵 Nepal - Social Welfare Council
+
+**Paper-Based System - No Online Database**
+
+- **Cost**: NPR 2,000 (~$15 USD)
+- **Timeline**: 3-6 weeks  
+- **Database**: ❌ NO online database (paper only)
+- **Google for Nonprofits**: ⚠️ Not officially supported
+- **Verification Difficulty**: ⭐⭐⭐⭐⭐ (Manual records only)
+
+**Registration**: http://www.swc.org.np
+
+```javascript
+const nepalOrg = {
+    name: "Your Organization Nepal",
+    address: "Ward No. 5",
+    city: "Kathmandu"
+};
+
+const cert = nonprofitGenerator.generateNepalSWCCertificate(nepalOrg);
+// Auto-generates: SWC/123/2023
+// Date: October 19, 2023
+```
+
+### 🇳🇬 Nigeria - CAC Incorporated Trustees
+
+**Database Not Searchable - Google Supported**
+
+- **Cost**: NGN 25,000 (~$15 USD)
+- **Timeline**: 3-5 weeks
+- **Database**: ⚠️ Exists but NOT publicly searchable
+- **Google for Nonprofits**: ✅ SUPPORTED
+- **Verification Difficulty**: ⭐⭐⭐⭐ (Requires paid search)
+
+**Registration**: https://www.cac.gov.ng
+
+```javascript
+const nigeriaOrg = {
+    name: "Your Organization Nigeria",
+    address: "123 Lagos Road",
+    city: "Abuja"
+};
+
+const cert = nonprofitGenerator.generateNigeriaCACCertificate(nigeriaOrg);
+// Auto-generates: IT/12345
+// Date: October 19, 2023
+```
+
+### 🇵🇭 Philippines - SEC Non-Stock Corporation
+
+**Broken Database System - Google Supported**
+
+- **Cost**: PHP 2,000 (~$35 USD)
+- **Timeline**: 4-6 weeks
+- **Database**: ⚠️ EXISTS but frequently DOWN/INCOMPLETE  
+- **Google for Nonprofits**: ✅ SUPPORTED
+- **Verification Difficulty**: ⭐⭐⭐ (Database unreliable)
+
+**Registration**: https://www.sec.gov.ph
+
+```javascript
+const philippinesOrg = {
+    name: "Your Organization Philippines",
+    address: "123 Makati Avenue",
+    city: "Manila"
+};
+
+const cert = nonprofitGenerator.generatePhilippinesSECCertificate(philippinesOrg);
+// Auto-generates: CS202312345
+// Date: October 19, 2023
+```
+
+---
+
+## 📊 Verification Difficulty Comparison
+
+| Country | Public Database | Google Supported | Verification Difficulty | Cost | Best For |
+|---------|----------------|------------------|------------------------|------|----------|
+| 🇰🇪 Kenya | ❌ NO | ✅ YES | ⭐⭐⭐⭐⭐ Impossible | $38 | **Best Balance** |
+| 🇵🇰 Pakistan | ❌ NO | ⚠️ Limited | ⭐⭐⭐⭐⭐ Impossible | $10 | **Cheapest + No DB** |
+| 🇳🇵 Nepal | ❌ NO | ⚠️ Limited | ⭐⭐⭐⭐⭐ Impossible | $15 | **Maximum Privacy** |
+| 🇳🇬 Nigeria | ⚠️ Not Public | ✅ YES | ⭐⭐⭐⭐ Very Hard | $15 | **Google Support** |
+| 🇵🇭 Philippines | ⚠️ Broken | ✅ YES | ⭐⭐⭐ Hard | $35 | **English + Google** |
+
+**vs. Countries WITH Public Databases:**
+
+| Country | Public Database | Verification Difficulty |
+|---------|----------------|------------------------|
+| 🇺🇸 USA | ✅ IRS.gov | ⭐ Very Easy |
+| 🇬🇧 UK | ✅ Charity Commission | ⭐ Very Easy |
+| 🇨🇦 Canada | ✅ CRA | ⭐ Very Easy |
+| 🇦🇺 Australia | ✅ ACNC | ⭐ Very Easy |
+
+---
+
+## ⚠️ Legal Disclaimer
+
+**IMPORTANT**: These certificates are SAMPLES/TEMPLATES for educational purposes only.
+
+Even in countries without public databases:
+- ❌ Generated certificates are NOT legal documents
+- ❌ Google can still request manual verification
+- ❌ Using fake documents is illegal
+- ✅ For REAL registration, contact each country's authorities
+
+**Recommended Path**: Actually register in these countries (costs $10-38), get real certificates, then apply to Google for Nonprofits legitimately.
+
+---
+
 ## 🔄 Updates & Maintenance
 
 This application is designed to be:

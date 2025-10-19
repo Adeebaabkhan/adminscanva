@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AdminScanva Certificate Generator</title>
+</head>
+<body>
+    <h1>Certificate Generator</h1>
+    <select id="countrySelect">
+        <option value="kenya">Kenya</option>
+        <option value="pakistan">Pakistan</option>
+        <option value="nepal">Nepal</option>
+        <option value="nigeria">Nigeria</option>
+        <option value="philippines">Philippines</option>
+        <!-- Existing countries options here -->
+    </select>
+    <button onclick="generateCertificate()">Generate Certificate</button>
+
+    <script>
+        function generateCertificate() {
+            const selectedCountry = document.getElementById('countrySelect').value;
+            switch (selectedCountry) {
+                case 'kenya':
+                    generateKenyaNGOCertificate();
+                    break;
+                case 'pakistan':
+                    generatePakistanSECPCertificate();
+                    break;
+                case 'nepal':
+                    generateNepalSWCCertificate();
+                    break;
+                case 'nigeria':
+                    generateNigeriaCACCertificate();
+                    break;
+                case 'philippines':
+                    generatePhilippinesSECCertificate();
+                    break;
+                // Handle existing cases
+            }
+        }
+
+        // New information about countries with no public databases
+        const noDatabaseInfo = "Kenya, Pakistan, Nepal, Nigeria, and Philippines have no public databases, making verification difficult.";
+
+        console.log(noDatabaseInfo);
+    </script>
+</body>
+</html>

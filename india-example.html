@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Nonprofit Certificate Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #FF9933 0%, #138808 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(to right, #FF9933 0%, #ffffff 33%, #ffffff 66%, #138808 100%);
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: #000080;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: #333;
+        }
+        
+        .flag {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        .form-section {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+            font-size: 1.1em;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #FF9933;
+            box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.1);
+        }
+        
+        .info-box {
+            background: #fff3e0;
+            border-left: 4px solid #FF9933;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .info-box h3 {
+            color: #e65100;
+            margin-bottom: 10px;
+        }
+        
+        .certificates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .cert-card {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        
+        .cert-card:hover {
+            background: #e8f5e9;
+            border-color: #4caf50;
+            transform: translateY(-5px);
+        }
+        
+        .cert-card input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .cert-card h4 {
+            color: #333;
+            margin: 10px 0;
+        }
+        
+        .cert-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #FF9933 0%, #138808 100%);
+            color: white;
+            padding: 18px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(255, 153, 51, 0.4);
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 153, 51, 0.6);
+        }
+        
+        #results {
+            margin-top: 30px;
+        }
+        
+        .cert-result {
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .cert-result img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin: 10px 0;
+        }
+        
+        .cert-result h3 {
+            color: #000080;
+            margin: 15px 0;
+        }
+        
+        .download-btn {
+            background: #4caf50;
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            cursor: pointer;
+            margin: 10px;
+        }
+        
+        .download-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="flag">🇮🇳</div>
+            <h1>India Nonprofit Certificates</h1>
+            <p>Generate all 6 Indian nonprofit certificates at once</p>
+        </div>
+        
+        <div class="form-section">
+            <div class="info-box">
+                <h3>📋 Complete India Nonprofit Documentation</h3>
+                <p>Generate professional certificates for 12A, 80G, PAN, NGO Darpan, FCRA, and Trust Deed</p>
+                <p><strong>All certificates dated October 19, 2023 (2 years old)</strong></p>
+            </div>
+            
+            <form id="indiaForm">
+                <div class="form-group">
+                    <label for="orgName">Organization/Trust Name *</label>
+                    <input type="text" id="orgName" placeholder="Adeeba Charitable Trust" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Registered Address *</label>
+                    <input type="text" id="address" placeholder="123 MG Road, Andheri East" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="city">City *</label>
+                    <input type="text" id="city" placeholder="Mumbai" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="state">State *</label>
+                    <select id="state" required>
+                        <option value="">-- Select State --</option>
+                        <option value="MH">Maharashtra</option>
+                        <option value="DL">Delhi</option>
+                        <option value="KA">Karnataka</option>
+                        <option value="TN">Tamil Nadu</option>
+                        <option value="UP">Uttar Pradesh</option>
+                        <option value="GJ">Gujarat</option>
+                        <option value="RJ">Rajasthan</option>
+                        <option value="WB">West Bengal</option>
+                        <option value="MP">Madhya Pradesh</option>
+                        <option value="AP">Andhra Pradesh</option>
+                        <option value="TG">Telangana</option>
+                        <option value="PB">Punjab</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="type">Organization Type</label>
+                    <select id="type">
+                        <option value="Public Charitable Trust">Public Charitable Trust</option>
+                        <option value="Society">Society</option>
+                        <option value="Section 8 Company">Section 8 Company</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pan">PAN (Leave blank for auto-generation)</label>
+                    <input type="text" id="pan" placeholder="Will be auto-generated like: AAATX4729K" maxlength="10">
+                </div>
+                
+                <h3 style="margin: 30px 0 15px 0; color: #000080;">Select Certificates to Generate:</h3>
+                
+                <div class="certificates-grid">
+                    <div class="cert-card" onclick="toggleCheckbox('cert12A')">
+                        <input type="checkbox" id="cert12A" checked>
+                        <h4>12A Certificate</h4>
+                        <p>Tax Exemption</p>
+                    </div>
+                    
+                    <div class="cert-card" onclick="toggleCheckbox('cert80G')">
+                        <input type="checkbox" id="cert80G" checked>
+                        <h4>80G Certificate</h4>
+                        <p>Donor Tax Benefits</p>
+                    </div>
+                    
+                    <div class="cert-card" onclick="toggleCheckbox('certPAN')">
+                        <input type="checkbox" id="certPAN" checked>
+                        <h4>PAN Card</h4>
+                        <p>Tax Identification</p>
+                    </div>
+                    
+                    <div class="cert-card" onclick="toggleCheckbox('certDarpan')">
+                        <input type="checkbox" id="certDarpan" checked>
+                        <h4>NGO Darpan</h4>
+                        <p>Government Registration</p>
+                    </div>
+                    
+                    <div class="cert-card" onclick="toggleCheckbox('certFCRA')">
+                        <input type="checkbox" id="certFCRA" checked>
+                        <h4>FCRA Certificate</h4>
+                        <p>Foreign Funding</p>
+                    </div>
+                    
+                    <div class="cert-card" onclick="toggleCheckbox('certDeed')">
+                        <input type="checkbox" id="certDeed" checked>
+                        <h4>Trust Deed</h4>
+                        <p>Legal Foundation</p>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn">🎨 Generate Selected Certificates</button>
+            </form>
+            
+            <div id="results"></div>
+        </div>
+    </div>
+    
+    <script src="js/nonprofitCertificateGenerator.js"></script>
+    <script>
+        function toggleCheckbox(id) {
+            const checkbox = document.getElementById(id);
+            checkbox.checked = !checkbox.checked;
+        }
+        
+        document.getElementById('indiaForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const orgData = {
+                name: document.getElementById('orgName').value,
+                address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                type: document.getElementById('type').value,
+                pan: document.getElementById('pan').value || undefined
+            };
+            
+            const results = document.getElementById('results');
+            results.innerHTML = '<h2 style="color: #000080; margin: 30px 0;">Generated Certificates:</h2>';
+            
+            const certificates = [
+                { id: 'cert12A', name: '12A Registration Certificate', func: 'generate12ACertificate' },
+                { id: 'cert80G', name: '80G Certificate', func: 'generate80GCertificate' },
+                { id: 'certPAN', name: 'PAN Card', func: 'generatePANCard' },
+                { id: 'certDarpan', name: 'NGO Darpan ID', func: 'generateNGODarpanID' },
+                { id: 'certFCRA', name: 'FCRA Certificate', func: 'generateFCRACertificate' },
+                { id: 'certDeed', name: 'Trust Deed', func: 'generateTrustDeed' }
+            ];
+            
+            certificates.forEach(cert => {
+                if (document.getElementById(cert.id).checked) {
+                    const certData = nonprofitGenerator[cert.func](orgData);
+                    
+                    const resultDiv = document.createElement('div');
+                    resultDiv.className = 'cert-result';
+                    resultDiv.innerHTML = `
+                        <h3>${cert.name}</h3>
+                        <img src="${certData}" alt="${cert.name}">
+                        <br>
+                        <button class="download-btn" onclick="download('${certData}', '${cert.name}', '${orgData.name}')">
+                            ⬇️ Download ${cert.name}
+                        </button>
+                    `;
+                    
+                    results.appendChild(resultDiv);
+                }
+            });
+            
+            // Add download all button
+            const downloadAllBtn = document.createElement('button');
+            downloadAllBtn.className = 'btn';
+            downloadAllBtn.style.marginTop = '30px';
+            downloadAllBtn.textContent = '⬇️ Download All Certificates';
+            downloadAllBtn.onclick = function() {
+                certificates.forEach(cert => {
+                    if (document.getElementById(cert.id).checked) {
+                        const certData = nonprofitGenerator[cert.func](orgData);
+                        download(certData, cert.name, orgData.name);
+                    }
+                });
+            };
+            results.appendChild(downloadAllBtn);
+            
+            results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+        
+        function download(dataUrl, certName, orgName) {
+            const link = document.createElement('a');
+            link.href = dataUrl;
+            link.download = `${certName.replace(/[^a-z0-9]/gi, '-')}-${orgName.replace(/[^a-z0-9]/gi, '-')}.jpg`;
+            link.click();
+        }
+    </script>
+</body>
+</html>

@@ -5,6 +5,14 @@ class NonprofitCertificateGenerator {
         this.ctx = this.canvas.getContext('2d');
     }
 
+    // Helper method to generate a date 2 years old (October 2023)
+    getOldDate() {
+        // Current date is 2025-10-19, so 2 years ago would be 2023-10-19
+        const oldDate = new Date();
+        oldDate.setFullYear(oldDate.getFullYear() - 2);
+        return oldDate;
+    }
+
     // Helper method to format dates
     formatDate(date) {
         return date.toLocaleDateString('en-US', {
@@ -12,6 +20,24 @@ class NonprofitCertificateGenerator {
             month: 'long',
             day: 'numeric'
         });
+    }
+
+    // Helper method to generate fake PAN number
+    generateFakePAN() {
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        const firstThree = 'AAA'; // First 3 letters (typically AAA for trusts)
+        const fourthLetter = 'T'; // Fourth letter (T for Trust, P for Person, C for Company, etc.)
+        const fifthLetter = letters.charAt(Math.floor(Math.random() * 26)); // Random letter (first letter of surname/name)
+        const fourDigits = String(Math.floor(Math.random() * 9000) + 1000); // 4 random digits
+        const lastLetter = letters.charAt(Math.floor(Math.random() * 26)); // Random letter (check digit)
+        
+        return `${firstThree}${fourthLetter}${fifthLetter}${fourDigits}${lastLetter}`;
+    }
+
+    // Helper method to generate fake registration number for 12A
+    generateFake12ARegNo() {
+        const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        return `AAATX${Math.floor(Math.random() * 9000) + 1000}${letters.charAt(Math.floor(Math.random() * 26))}`;
     }
 
     // ========== INDIA CERTIFICATES ==========
@@ -55,8 +81,8 @@ class NonprofitCertificateGenerator {
         ctx.fillText('Under Section 12A', this.canvas.width / 2, 345);
         ctx.fillText('Income Tax Act, 1961', this.canvas.width / 2, 375);
         
-        // Registration Number
-        const regNo = `AAATX${Math.floor(Math.random() * 9000) + 1000}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`;
+        // Registration Number - AUTO GENERATED
+        const regNo = this.generateFake12ARegNo();
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 20px Arial';
         ctx.fillText(`Registration No: ${regNo}`, this.canvas.width / 2, 430);
@@ -70,17 +96,23 @@ class NonprofitCertificateGenerator {
         ctx.fillStyle = '#000080';
         ctx.fillText(orgData.name.toUpperCase(), 150, 530);
         
+        // Use auto-generated PAN if not provided
+        const panNumber = orgData.pan || this.generateFakePAN();
+        
         ctx.fillStyle = '#000000';
         ctx.font = '18px Arial';
         ctx.fillText(`Registered Address: ${orgData.address}`, 150, 570);
-        ctx.fillText(`PAN: ${orgData.pan}`, 150, 600);
-        ctx.fillText(`Registration Date: ${this.formatDate(new Date())}`, 150, 630);
+        ctx.fillText(`PAN: ${panNumber}`, 150, 600);
+        
+        // Use old date (2 years ago)
+        const oldDate = this.getOldDate();
+        ctx.fillText(`Registration Date: ${this.formatDate(oldDate)}`, 150, 630);
         
         // Certificate Body
         ctx.font = '16px Arial';
         ctx.fillText('has been registered under Section 12A of the Income Tax Act, 1961', 100, 690);
         ctx.fillText('for the purposes of claiming exemption under Section 11 and 12.', 100, 720);
-        ctx.fillText('This registration is valid from Financial Year 2024-25 onwards', 100, 750);
+        ctx.fillText('This registration is valid from Financial Year 2023-24 onwards', 100, 750);
         ctx.fillText('subject to the provisions of the Income Tax Act.', 100, 780);
         
         // Signature Section
@@ -143,8 +175,9 @@ class NonprofitCertificateGenerator {
         ctx.font = 'bold 20px Arial';
         ctx.fillText('Income Tax Act, 1961', this.canvas.width / 2, 320);
         
-        // Registration Number
-        const regNo = `80G/${Math.floor(Math.random() * 9000) + 1000}/${new Date().getFullYear()}`;
+        // Registration Number - Use old year
+        const oldDate = this.getOldDate();
+        const regNo = `80G/${Math.floor(Math.random() * 9000) + 1000}/${oldDate.getFullYear()}`;
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 18px Arial';
         ctx.fillText(`Registration No: ${regNo}`, this.canvas.width / 2, 370);
@@ -158,21 +191,24 @@ class NonprofitCertificateGenerator {
         ctx.fillStyle = '#000080';
         ctx.fillText(orgData.name.toUpperCase(), 150, 470);
         
+        // Use auto-generated PAN if not provided
+        const panNumber = orgData.pan || this.generateFakePAN();
+        
         ctx.fillStyle = '#000000';
         ctx.font = '17px Arial';
         ctx.fillText(`Address: ${orgData.address}`, 150, 510);
-        ctx.fillText(`PAN: ${orgData.pan}`, 150, 540);
+        ctx.fillText(`PAN: ${panNumber}`, 150, 540);
         
         // Exemption Details
         ctx.font = 'bold 18px Arial';
         ctx.fillText('Tax Exemption Details:', 100, 600);
         ctx.font = '16px Arial';
         ctx.fillText('• Donations are eligible for 50% deduction under Section 80G', 120, 635);
-        ctx.fillText('• Valid for contributions made from AY 2024-25 onwards', 120, 665);
+        ctx.fillText('• Valid for contributions made from AY 2023-24 onwards', 120, 665);
         ctx.fillText('• Subject to provisions of Income Tax Act, 1961', 120, 695);
         
-        // Validity
-        const issueDate = new Date();
+        // Validity - Use old dates
+        const issueDate = oldDate;
         const validUntil = new Date(issueDate.getFullYear() + 5, issueDate.getMonth(), issueDate.getDate());
         ctx.fillText(`Issue Date: ${this.formatDate(issueDate)}`, 100, 750);
         ctx.fillText(`Valid Until: ${this.formatDate(validUntil)}`, 100, 780);
@@ -229,8 +265,9 @@ class NonprofitCertificateGenerator {
         ctx.lineWidth = 4;
         ctx.strokeRect(20, 20, this.canvas.width - 40, this.canvas.height - 40);
         
-        // NGO Darpan ID
-        const darpanId = `${orgData.state || 'MH'}/2024/${Math.floor(Math.random() * 900000) + 100000}`;
+        // NGO Darpan ID - Use old year
+        const oldDate = this.getOldDate();
+        const darpanId = `${orgData.state || 'MH'}/${oldDate.getFullYear()}/${Math.floor(Math.random() * 900000) + 100000}`;
         ctx.fillStyle = '#8B0000';
         ctx.font = 'bold 28px Arial';
         ctx.fillText(`ID: ${darpanId}`, this.canvas.width / 2, 160);
@@ -247,8 +284,8 @@ class NonprofitCertificateGenerator {
         ctx.fillText(`State: ${orgData.state || 'Maharashtra'}`, 100, 350);
         ctx.fillText(`City: ${orgData.city || 'Mumbai'}`, 100, 385);
         
-        // Registration Date
-        ctx.fillText(`Registered on NGO Darpan: ${this.formatDate(new Date())}`, 100, 430);
+        // Registration Date - Use old date
+        ctx.fillText(`Registered on NGO Darpan: ${this.formatDate(oldDate)}`, 100, 430);
         
         // QR Code Placeholder
         ctx.strokeStyle = '#000080';
@@ -300,7 +337,7 @@ class NonprofitCertificateGenerator {
         ctx.lineWidth = 3;
         ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
         
-        // Registration Number
+        // Registration Number - AUTO GENERATED
         const fcraNo = `${Math.floor(Math.random() * 90) + 10}${Math.floor(Math.random() * 9000000) + 1000000}`;
         ctx.fillStyle = '#8B0000';
         ctx.font = 'bold 22px Arial';
@@ -314,9 +351,12 @@ class NonprofitCertificateGenerator {
         ctx.font = 'bold 20px Arial';
         ctx.fillText(orgData.name, 100, 410);
         
+        // Use auto-generated PAN if not provided
+        const panNumber = orgData.pan || this.generateFakePAN();
+        
         ctx.font = '18px Arial';
         ctx.fillText(`Address: ${orgData.address}`, 100, 450);
-        ctx.fillText(`PAN: ${orgData.pan}`, 100, 485);
+        ctx.fillText(`PAN: ${panNumber}`, 100, 485);
         
         // FCRA Details
         ctx.font = 'bold 18px Arial';
@@ -327,10 +367,10 @@ class NonprofitCertificateGenerator {
         ctx.fillText('• Annual returns mandatory', 120, 635);
         ctx.fillText('• Valid for receipt of foreign funds', 120, 665);
         
-        // Validity
-        const issueDate = new Date();
-        const validUntil = new Date(issueDate.getFullYear() + 5, issueDate.getMonth(), issueDate.getDate());
-        ctx.fillText(`Registration Date: ${this.formatDate(issueDate)}`, 100, 720);
+        // Validity - Use old dates
+        const oldDate = this.getOldDate();
+        const validUntil = new Date(oldDate.getFullYear() + 5, oldDate.getMonth(), oldDate.getDate());
+        ctx.fillText(`Registration Date: ${this.formatDate(oldDate)}`, 100, 720);
         ctx.fillText(`Valid Until: ${this.formatDate(validUntil)}`, 100, 750);
         ctx.fillText('(Subject to renewal as per FCRA provisions)', 100, 780);
         
@@ -382,8 +422,9 @@ class NonprofitCertificateGenerator {
         ctx.font = '18px serif';
         ctx.fillText('Registered under the Indian Trusts Act, 1882', this.canvas.width / 2, 115);
         
-        // Registration Details
-        const regNo = `${orgData.state || 'MH'}/TRUST/${Math.floor(Math.random() * 9000) + 1000}/2024`;
+        // Registration Details - Use old year
+        const oldDate = this.getOldDate();
+        const regNo = `${orgData.state || 'MH'}/TRUST/${Math.floor(Math.random() * 9000) + 1000}/${oldDate.getFullYear()}`;
         ctx.font = 'bold 16px Arial';
         ctx.fillText(`Registration No: ${regNo}`, this.canvas.width / 2, 155);
         
@@ -398,7 +439,7 @@ class NonprofitCertificateGenerator {
         ctx.textAlign = 'left';
         
         const content = [
-            'THIS DEED OF TRUST is made on this day of ' + this.formatDate(new Date()),
+            'THIS DEED OF TRUST is made on this day of ' + this.formatDate(oldDate),
             '',
             'BY AND BETWEEN:',
             '',
@@ -501,8 +542,8 @@ class NonprofitCertificateGenerator {
         ctx.textAlign = 'left';
         ctx.fillText('Permanent Account Number Card', 30, 100);
         
-        // PAN Number
-        const panNo = orgData.pan || `AAATX${Math.floor(Math.random() * 9000) + 1000}${String.fromCharCode(65 + Math.floor(Math.random() * 26))}`;
+        // PAN Number - AUTO GENERATED if not provided
+        const panNo = orgData.pan || this.generateFakePAN();
         ctx.fillStyle = '#8B0000';
         ctx.font = 'bold 32px monospace';
         ctx.fillText(panNo, 30, 150);
@@ -520,11 +561,12 @@ class NonprofitCertificateGenerator {
         ctx.font = '13px Arial';
         ctx.fillText(orgData.type || 'Public Charitable Trust', 30, 295);
         
-        // Date of Registration
+        // Date of Registration - Use old date
+        const oldDate = this.getOldDate();
         ctx.font = 'bold 14px Arial';
         ctx.fillText('Date of Issue:', 30, 330);
         ctx.font = '13px Arial';
-        ctx.fillText(this.formatDate(new Date()), 30, 355);
+        ctx.fillText(this.formatDate(oldDate), 30, 355);
         
         // Signature
         ctx.font = 'italic 12px Arial';
@@ -575,7 +617,7 @@ class NonprofitCertificateGenerator {
         ctx.lineWidth = 3;
         ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
         
-        // EIN
+        // EIN - AUTO GENERATED
         const ein = orgData.ein || `${Math.floor(Math.random() * 90) + 10}-${Math.floor(Math.random() * 9000000) + 1000000}`;
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 20px Arial';
@@ -618,10 +660,11 @@ class NonprofitCertificateGenerator {
             yPos += 28;
         });
         
-        // Effective Date
+        // Effective Date - Use old date
+        const oldDate = this.getOldDate();
         yPos += 30;
         ctx.font = 'bold 18px Arial';
-        ctx.fillText(`Effective Date: ${this.formatDate(new Date())}`, 80, yPos);
+        ctx.fillText(`Effective Date: ${this.formatDate(oldDate)}`, 80, yPos);
         
         // Signature
         yPos += 80;
@@ -676,7 +719,7 @@ class NonprofitCertificateGenerator {
         ctx.lineWidth = 3;
         ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
         
-        // Registration Number
+        // Registration Number - AUTO GENERATED
         const charityNo = Math.floor(Math.random() * 900000) + 100000;
         ctx.fillStyle = '#00247d';
         ctx.font = 'bold 24px Arial';
@@ -695,12 +738,13 @@ class NonprofitCertificateGenerator {
         ctx.fillText(`Registered Address: ${orgData.address}`, 80, 370);
         ctx.fillText(`City: ${orgData.city || 'London'}`, 80, 405);
         
-        // Registration Details
+        // Registration Details - Use old date
+        const oldDate = this.getOldDate();
         ctx.font = 'bold 18px Arial';
         ctx.fillText('Registration Details:', 80, 470);
         ctx.font = '16px Arial';
         ctx.fillText(`• Registered as a Charitable Incorporated Organisation (CIO)`, 100, 510);
-        ctx.fillText(`• Registration Date: ${this.formatDate(new Date())}`, 100, 545);
+        ctx.fillText(`• Registration Date: ${this.formatDate(oldDate)}`, 100, 545);
         ctx.fillText(`• Governing Document: Constitution`, 100, 580);
         ctx.fillText(`• Registered with the Charity Commission`, 100, 615);
         
@@ -768,7 +812,7 @@ class NonprofitCertificateGenerator {
         ctx.fillText('CHARITABLE REGISTRATION', this.canvas.width / 2, 230);
         ctx.fillText('ENREGISTREMENT COMME ORGANISME DE BIENFAISANCE', this.canvas.width / 2, 260);
         
-        // Registration Number
+        // Registration Number - AUTO GENERATED
         const bnNo = `${Math.floor(Math.random() * 900000000) + 100000000} RR 0001`;
         ctx.fillStyle = '#000000';
         ctx.font = 'bold 20px Arial';
@@ -785,12 +829,13 @@ class NonprofitCertificateGenerator {
         ctx.fillText(`Address / Adresse: ${orgData.address}`, 80, 450);
         ctx.fillText(`City / Ville: ${orgData.city || 'Toronto'}, Province: ${orgData.province || 'ON'}`, 80, 485);
         
-        // Registration Details
+        // Registration Details - Use old date
+        const oldDate = this.getOldDate();
         ctx.font = 'bold 18px Arial';
         ctx.fillText('Registration Status / Statut d\'enregistrement:', 80, 540);
         ctx.font = '16px Arial';
         ctx.fillText('• Registered Charity / Organisme de bienfaisance enregistré', 100, 575);
-        ctx.fillText(`• Effective Date / Date d'entrée en vigueur: ${this.formatDate(new Date())}`, 100, 610);
+        ctx.fillText(`• Effective Date / Date d'entrée en vigueur: ${this.formatDate(oldDate)}`, 100, 610);
         ctx.fillText('• Eligible to issue tax receipts / Peut délivrer des reçus fiscaux', 100, 645);
         
         // Designation
@@ -848,7 +893,7 @@ class NonprofitCertificateGenerator {
         ctx.lineWidth = 3;
         ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
         
-        // ABN
+        // ABN - AUTO GENERATED
         const abn = `${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 900) + 100}`;
         ctx.fillStyle = '#002664';
         ctx.font = 'bold 22px Arial';
@@ -867,11 +912,12 @@ class NonprofitCertificateGenerator {
         ctx.fillText(`Registered Address: ${orgData.address}`, 80, 380);
         ctx.fillText(`City: ${orgData.city || 'Sydney'}, State: ${orgData.state || 'NSW'}`, 80, 415);
         
-        // Registration Details
+        // Registration Details - Use old date
+        const oldDate = this.getOldDate();
         ctx.font = 'bold 18px Arial';
         ctx.fillText('ACNC Registration Details:', 80, 475);
         ctx.font = '16px Arial';
-        ctx.fillText(`• Registered with ACNC on: ${this.formatDate(new Date())}`, 100, 515);
+        ctx.fillText(`• Registered with ACNC on: ${this.formatDate(oldDate)}`, 100, 515);
         ctx.fillText('• Charity Type: Public Benevolent Institution', 100, 550);
         ctx.fillText('• Tax Concession: Income Tax Exempt', 100, 585);
         ctx.fillText('• Deductible Gift Recipient (DGR) Status: Endorsed', 100, 620);

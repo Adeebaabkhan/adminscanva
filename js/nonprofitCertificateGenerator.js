@@ -61,6 +61,32 @@ class NonprofitCertificateGenerator {
         return `${Math.floor(Math.random() * 90) + 10} ${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 900) + 100} ${Math.floor(Math.random() * 900) + 100}`;
     }
 
+    // Helper method to generate fake Kenya NGO Number
+    generateFakeKenyaNGONumber() {
+        return `NGO/R/${Math.floor(Math.random() * 90000) + 10000}`;
+    }
+
+    // Helper method to generate fake Pakistan Company Number
+    generateFakePakistanCompanyNumber() {
+        return String(Math.floor(Math.random() * 9000000) + 1000000);
+    }
+
+    // Helper method to generate fake Nepal SWC Number
+    generateFakeNepalSWCNumber() {
+        const num = Math.floor(Math.random() * 900) + 100;
+        return `SWC/${num}/2023`;
+    }
+
+    // Helper method to generate fake Nigeria IT Number
+    generateFakeNigeriaITNumber() {
+        return `IT/${Math.floor(Math.random() * 90000) + 10000}`;
+    }
+
+    // Helper method to generate fake Philippines SEC Number
+    generateFakePhilippinesSECNumber() {
+        return `CS2023${Math.floor(Math.random() * 90000) + 10000}`;
+    }
+
     // ========== INDIA CERTIFICATES ==========
 
     // Generate 12A Registration Certificate (India)
@@ -967,6 +993,522 @@ class NonprofitCertificateGenerator {
         ctx.textAlign = 'center';
         ctx.fillText('ACNC', 700, 835);
         ctx.fillText('AUSTRALIA', 700, 852);
+        
+        return this.canvas.toDataURL('image/jpeg', 0.95);
+    }
+
+    // ========== KENYA CERTIFICATES ==========
+
+    // Generate Kenya NGO Certificate
+    generateKenyaNGOCertificate(orgData) {
+        this.canvas.width = 850;
+        this.canvas.height = 1100;
+        const ctx = this.ctx;
+        
+        // Background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Kenyan Flag Colors Header
+        ctx.fillStyle = '#000000'; // Black
+        ctx.fillRect(0, 0, this.canvas.width, 50);
+        ctx.fillStyle = '#C8102E'; // Red
+        ctx.fillRect(0, 50, this.canvas.width, 50);
+        ctx.fillStyle = '#007A3D'; // Green
+        ctx.fillRect(0, 100, this.canvas.width, 50);
+        
+        // White stripes
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 40, this.canvas.width, 20);
+        ctx.fillRect(0, 90, this.canvas.width, 20);
+        
+        // Coat of Arms Symbol
+        ctx.fillStyle = '#8B0000';
+        ctx.font = 'bold 40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚖', this.canvas.width / 2, 100);
+        
+        // Header
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 30px Arial';
+        ctx.fillText('REPUBLIC OF KENYA', this.canvas.width / 2, 210);
+        ctx.font = 'bold 26px Arial';
+        ctx.fillStyle = '#8B0000';
+        ctx.fillText('NGO COORDINATION BOARD', this.canvas.width / 2, 250);
+        
+        // Title
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 28px Arial';
+        ctx.fillText('CERTIFICATE OF REGISTRATION', this.canvas.width / 2, 310);
+        ctx.font = '18px Arial';
+        ctx.fillText('Under the Non-Governmental Organizations Co-ordination Act', this.canvas.width / 2, 340);
+        
+        // Border
+        ctx.strokeStyle = '#007A3D';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
+        
+        // Registration Number - AUTO GENERATED
+        const ngoNo = this.generateFakeKenyaNGONumber();
+        ctx.fillStyle = '#8B0000';
+        ctx.font = 'bold 22px Arial';
+        ctx.fillText(`Registration No: ${ngoNo}`, this.canvas.width / 2, 400);
+        
+        // Organization Details
+        ctx.fillStyle = '#000000';
+        ctx.font = '18px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('This is to certify that:', 80, 460);
+        
+        ctx.font = 'bold 22px Arial';
+        ctx.fillStyle = '#000000';
+        ctx.fillText(orgData.name.toUpperCase(), 80, 500);
+        
+        ctx.font = '18px Arial';
+        ctx.fillText(`Registered Address: ${orgData.address}`, 80, 540);
+        ctx.fillText(`Location: ${orgData.city || 'Nairobi'}, Kenya`, 80, 575);
+        
+        // Certificate Body - Use old date
+        const oldDate = this.getOldDate();
+        ctx.font = '16px Arial';
+        ctx.fillText('has been duly registered as a Non-Governmental Organization under', 80, 630);
+        ctx.fillText('the provisions of the Non-Governmental Organizations Co-ordination Act', 80, 660);
+        ctx.fillText('and is authorized to operate in the Republic of Kenya.', 80, 690);
+        ctx.fillText('', 80, 720);
+        ctx.fillText(`Registration Date: ${this.formatDate(oldDate)}`, 80, 750);
+        ctx.fillText('Valid Status: Active', 80, 780);
+        
+        // Objectives
+        ctx.font = 'bold 18px Arial';
+        ctx.fillText('Authorized Activities:', 80, 840);
+        ctx.font = '16px Arial';
+        ctx.fillText('• Promotion of charitable and development activities', 100, 875);
+        ctx.fillText('• Community empowerment and capacity building', 100, 905);
+        ctx.fillText('• Social welfare and humanitarian services', 100, 935);
+        
+        // Signature
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText('Authorized Signatory:', 80, 1000);
+        ctx.font = '17px Arial';
+        ctx.fillText('Executive Director, NGO Coordination Board', 80, 1030);
+        ctx.fillText('Nairobi, Kenya', 80, 1055);
+        
+        // Official Seal
+        ctx.strokeStyle = '#007A3D';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(700, 1020, 55, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.font = 'bold 11px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('NGO BOARD', 700, 1015);
+        ctx.fillText('KENYA', 700, 1030);
+        
+        return this.canvas.toDataURL('image/jpeg', 0.95);
+    }
+
+    // ========== PAKISTAN CERTIFICATES ==========
+
+    // Generate Pakistan SECP Certificate
+    generatePakistanSECPCertificate(orgData) {
+        this.canvas.width = 850;
+        this.canvas.height = 1000;
+        const ctx = this.ctx;
+        
+        // Background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Pakistan Flag Colors Header
+        ctx.fillStyle = '#01411C'; // Green
+        ctx.fillRect(0, 0, this.canvas.width * 0.75, 80);
+        ctx.fillStyle = '#ffffff'; // White
+        ctx.fillRect(this.canvas.width * 0.75, 0, this.canvas.width * 0.25, 80);
+        
+        // Star and Crescent Symbol
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 50px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('☪', this.canvas.width * 0.85, 55);
+        
+        // Header
+        ctx.fillStyle = '#01411C';
+        ctx.font = 'bold 28px Arial';
+        ctx.fillText('SECURITIES & EXCHANGE COMMISSION', this.canvas.width / 2, 140);
+        ctx.fillText('OF PAKISTAN', this.canvas.width / 2, 175);
+        ctx.font = '18px Arial';
+        ctx.fillText('اسلامی جمہوریہ پاکستان', this.canvas.width / 2, 205);
+        
+        // Title
+        ctx.fillStyle = '#8B0000';
+        ctx.font = 'bold 26px Arial';
+        ctx.fillText('CERTIFICATE OF INCORPORATION', this.canvas.width / 2, 260);
+        ctx.font = 'bold 20px Arial';
+        ctx.fillText('Section 42 Company (Not-for-Profit)', this.canvas.width / 2, 290);
+        
+        // Border
+        ctx.strokeStyle = '#01411C';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
+        
+        // Company Number - AUTO GENERATED
+        const companyNo = this.generateFakePakistanCompanyNumber();
+        ctx.fillStyle = '#01411C';
+        ctx.font = 'bold 24px Arial';
+        ctx.fillText(`Company Number: ${companyNo}`, this.canvas.width / 2, 350);
+        
+        // Organization Details
+        ctx.fillStyle = '#000000';
+        ctx.font = '18px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('This is to certify that:', 80, 410);
+        
+        ctx.font = 'bold 22px Arial';
+        ctx.fillText(orgData.name.toUpperCase(), 80, 450);
+        
+        ctx.font = '18px Arial';
+        ctx.fillText(`Registered Office: ${orgData.address}`, 80, 490);
+        ctx.fillText(`City: ${orgData.city || 'Islamabad/Karachi'}, Pakistan`, 80, 525);
+        
+        // Certificate Body - Use old date
+        const oldDate = this.getOldDate();
+        ctx.font = '16px Arial';
+        ctx.fillText('is incorporated under Section 42 of the Companies Act, 2017', 80, 580);
+        ctx.fillText('as a company limited by guarantee without share capital,', 80, 610);
+        ctx.fillText('and is registered as a Not-for-Profit organization.', 80, 640);
+        ctx.fillText('', 80, 670);
+        ctx.fillText(`Date of Incorporation: ${this.formatDate(oldDate)}`, 80, 700);
+        
+        // Objects
+        ctx.font = 'bold 18px Arial';
+        ctx.fillText('Objects:', 80, 760);
+        ctx.font = '16px Arial';
+        ctx.fillText('• Promotion of charitable, educational, and welfare activities', 100, 795);
+        ctx.fillText('• Social development and community services', 100, 825);
+        ctx.fillText('• Other objects of public benefit', 100, 855);
+        
+        // Signature
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText('Issued under the authority of:', 80, 910);
+        ctx.font = '17px Arial';
+        ctx.fillText('Registrar, Securities & Exchange Commission of Pakistan', 80, 940);
+        
+        // Official Seal
+        ctx.strokeStyle = '#01411C';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(700, 920, 50, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.font = 'bold 11px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('SECP', 700, 917);
+        ctx.fillText('PAKISTAN', 700, 932);
+        
+        return this.canvas.toDataURL('image/jpeg', 0.95);
+    }
+
+    // ========== NEPAL CERTIFICATES ==========
+
+    // Generate Nepal SWC Certificate
+    generateNepalSWCCertificate(orgData) {
+        this.canvas.width = 800;
+        this.canvas.height = 1000;
+        const ctx = this.ctx;
+        
+        // Background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Traditional Nepali Border (double red lines)
+        ctx.strokeStyle = '#DC143C';
+        ctx.lineWidth = 4;
+        ctx.strokeRect(20, 20, this.canvas.width - 40, this.canvas.height - 40);
+        ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
+        
+        // Nepal Flag Symbol
+        ctx.fillStyle = '#DC143C';
+        ctx.font = 'bold 50px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('🏔', this.canvas.width / 2, 80);
+        
+        // Header (Bilingual)
+        ctx.fillStyle = '#000080';
+        ctx.font = 'bold 26px Arial';
+        ctx.fillText('GOVERNMENT OF NEPAL', this.canvas.width / 2, 140);
+        ctx.fillText('नेपाल सरकार', this.canvas.width / 2, 170);
+        ctx.font = 'bold 22px Arial';
+        ctx.fillStyle = '#8B0000';
+        ctx.fillText('SOCIAL WELFARE COUNCIL', this.canvas.width / 2, 210);
+        ctx.fillText('समाज कल्याण परिषद', this.canvas.width / 2, 240);
+        
+        // Title
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 26px Arial';
+        ctx.fillText('NGO REGISTRATION CERTIFICATE', this.canvas.width / 2, 300);
+        
+        // Registration Number - AUTO GENERATED
+        const swcNo = this.generateFakeNepalSWCNumber();
+        ctx.fillStyle = '#DC143C';
+        ctx.font = 'bold 22px Arial';
+        ctx.fillText(`Registration No: ${swcNo}`, this.canvas.width / 2, 360);
+        
+        // Organization Details
+        ctx.fillStyle = '#000000';
+        ctx.font = '18px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('This is to certify that:', 80, 420);
+        
+        ctx.font = 'bold 20px Arial';
+        ctx.fillText(orgData.name.toUpperCase(), 80, 460);
+        
+        ctx.font = '18px Arial';
+        ctx.fillText(`Address: ${orgData.address}`, 80, 500);
+        ctx.fillText(`District: ${orgData.city || 'Kathmandu'}, Nepal`, 80, 535);
+        
+        // Certificate Body - Use old date
+        const oldDate = this.getOldDate();
+        ctx.font = '16px Arial';
+        ctx.fillText('has been registered with the Social Welfare Council as a', 80, 590);
+        ctx.fillText('Non-Governmental Organization under the Association Registration Act', 80, 620);
+        ctx.fillText('and Social Welfare Act, and is authorized to operate in Nepal.', 80, 650);
+        ctx.fillText('', 80, 680);
+        ctx.fillText(`Registration Date: ${this.formatDate(oldDate)}`, 80, 710);
+        
+        // Objectives
+        ctx.font = 'bold 18px Arial';
+        ctx.fillText('Authorized Objectives:', 80, 770);
+        ctx.font = '16px Arial';
+        ctx.fillText('• Social welfare and community development', 100, 805);
+        ctx.fillText('• Educational and cultural activities', 100, 835);
+        ctx.fillText('• Poverty alleviation and humanitarian services', 100, 865);
+        
+        // Signature
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText('Authorized by:', 80, 930);
+        ctx.font = '17px Arial';
+        ctx.fillText('Member Secretary, Social Welfare Council', 80, 960);
+        ctx.fillText('Kathmandu, Nepal', 80, 985);
+        
+        // Official Seal
+        ctx.strokeStyle = '#DC143C';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(650, 950, 50, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.font = 'bold 11px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('SWC', 650, 947);
+        ctx.fillText('NEPAL', 650, 962);
+        
+        return this.canvas.toDataURL('image/jpeg', 0.95);
+    }
+
+    // ========== NIGERIA CERTIFICATES ==========
+
+    // Generate Nigeria CAC Certificate
+    generateNigeriaCACCertificate(orgData) {
+        this.canvas.width = 850;
+        this.canvas.height = 1100;
+        const ctx = this.ctx;
+        
+        // Background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Nigerian Flag Colors
+        ctx.fillStyle = '#008751'; // Green
+        ctx.fillRect(0, 0, this.canvas.width / 3, 70);
+        ctx.fillStyle = '#ffffff'; // White
+        ctx.fillRect(this.canvas.width / 3, 0, this.canvas.width / 3, 70);
+        ctx.fillStyle = '#008751'; // Green
+        ctx.fillRect(this.canvas.width * 2 / 3, 0, this.canvas.width / 3, 70);
+        
+        // Nigerian Coat of Arms Symbol
+        ctx.fillStyle = '#000000';
+        ctx.font = 'bold 40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('⚖', this.canvas.width / 2, 50);
+        
+        // Header
+        ctx.fillStyle = '#008751';
+        ctx.font = 'bold 26px Arial';
+        ctx.fillText('FEDERAL REPUBLIC OF NIGERIA', this.canvas.width / 2, 130);
+        ctx.font = 'bold 24px Arial';
+        ctx.fillText('CORPORATE AFFAIRS COMMISSION', this.canvas.width / 2, 165);
+        
+        // Title
+        ctx.fillStyle = '#8B0000';
+        ctx.font = 'bold 28px Arial';
+        ctx.fillText('CERTIFICATE OF REGISTRATION', this.canvas.width / 2, 225);
+        ctx.font = 'bold 22px Arial';
+        ctx.fillText('Incorporated Trustees', this.canvas.width / 2, 255);
+        
+        // Border
+        ctx.strokeStyle = '#008751';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
+        
+        // IT Number - AUTO GENERATED
+        const itNo = this.generateFakeNigeriaITNumber();
+        ctx.fillStyle = '#008751';
+        ctx.font = 'bold 24px Arial';
+        ctx.fillText(`Registration Number: ${itNo}`, this.canvas.width / 2, 315);
+        
+        // Organization Details
+        ctx.fillStyle = '#000000';
+        ctx.font = '18px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('This is to certify that:', 80, 375);
+        
+        ctx.font = 'bold 22px Arial';
+        ctx.fillText(orgData.name.toUpperCase(), 80, 415);
+        
+        ctx.font = '18px Arial';
+        ctx.fillText(`Registered Address: ${orgData.address}`, 80, 455);
+        ctx.fillText(`Location: ${orgData.city || 'Abuja'}, Nigeria`, 80, 490);
+        
+        // Certificate Body - Use old date
+        const oldDate = this.getOldDate();
+        ctx.font = '16px Arial';
+        ctx.fillText('has been duly registered as a Body Corporate under Part C', 80, 545);
+        ctx.fillText('of the Companies and Allied Matters Act (CAMA) as Incorporated Trustees,', 80, 575);
+        ctx.fillText('and is authorized to operate as a non-profit organization', 80, 605);
+        ctx.fillText('in the Federal Republic of Nigeria.', 80, 635);
+        ctx.fillText('', 80, 665);
+        ctx.fillText(`Date of Incorporation: ${this.formatDate(oldDate)}`, 80, 695);
+        ctx.fillText('Status: Active', 80, 725);
+        
+        // Objects
+        ctx.font = 'bold 18px Arial';
+        ctx.fillText('Objects:', 80, 785);
+        ctx.font = '16px Arial';
+        ctx.fillText('• Promotion of charitable and philanthropic activities', 100, 820);
+        ctx.fillText('• Educational advancement and social welfare', 100, 850);
+        ctx.fillText('• Community development and humanitarian services', 100, 880);
+        ctx.fillText('• Other objects beneficial to the public', 100, 910);
+        
+        // Trustees
+        ctx.font = 'bold 18px Arial';
+        ctx.fillText('Trustees: As registered with the Commission', 80, 960);
+        
+        // Signature
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText('Issued by:', 80, 1020);
+        ctx.font = '17px Arial';
+        ctx.fillText('Registrar-General, Corporate Affairs Commission', 80, 1050);
+        ctx.fillText('Abuja, Nigeria', 80, 1075);
+        
+        // Official Seal
+        ctx.strokeStyle = '#008751';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(700, 1040, 55, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.font = 'bold 11px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('CAC', 700, 1035);
+        ctx.fillText('NIGERIA', 700, 1050);
+        
+        return this.canvas.toDataURL('image/jpeg', 0.95);
+    }
+
+    // ========== PHILIPPINES CERTIFICATES ==========
+
+    // Generate Philippines SEC Certificate
+    generatePhilippinesSECCertificate(orgData) {
+        this.canvas.width = 850;
+        this.canvas.height = 1000;
+        const ctx = this.ctx;
+        
+        // Background
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Philippine Flag Colors
+        ctx.fillStyle = '#0038A8'; // Blue
+        ctx.fillRect(0, 0, this.canvas.width, 50);
+        ctx.fillStyle = '#CE1126'; // Red
+        ctx.fillRect(0, 50, this.canvas.width, 50);
+        
+        // Sun and Stars Symbol
+        ctx.fillStyle = '#FCD116'; // Gold
+        ctx.font = 'bold 40px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('☀', this.canvas.width / 2, 60);
+        
+        // Header
+        ctx.fillStyle = '#0038A8';
+        ctx.font = 'bold 24px Arial';
+        ctx.fillText('REPUBLIC OF THE PHILIPPINES', this.canvas.width / 2, 145);
+        ctx.font = 'bold 26px Arial';
+        ctx.fillText('SECURITIES AND EXCHANGE COMMISSION', this.canvas.width / 2, 180);
+        
+        // Title
+        ctx.fillStyle = '#8B0000';
+        ctx.font = 'bold 26px Arial';
+        ctx.fillText('CERTIFICATE OF FILING', this.canvas.width / 2, 240);
+        ctx.font = 'bold 20px Arial';
+        ctx.fillText('Non-Stock, Non-Profit Corporation', this.canvas.width / 2, 270);
+        
+        // Border
+        ctx.strokeStyle = '#0038A8';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(30, 30, this.canvas.width - 60, this.canvas.height - 60);
+        
+        // SEC Number - AUTO GENERATED
+        const secNo = this.generateFakePhilippinesSECNumber();
+        ctx.fillStyle = '#0038A8';
+        ctx.font = 'bold 22px Arial';
+        ctx.fillText(`SEC Registration No: ${secNo}`, this.canvas.width / 2, 330);
+        
+        // Organization Details
+        ctx.fillStyle = '#000000';
+        ctx.font = '18px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('This is to certify that:', 80, 390);
+        
+        ctx.font = 'bold 22px Arial';
+        ctx.fillText(orgData.name.toUpperCase(), 80, 430);
+        
+        ctx.font = '18px Arial';
+        ctx.fillText(`Principal Office: ${orgData.address}`, 80, 470);
+        ctx.fillText(`City: ${orgData.city || 'Manila'}, Philippines`, 80, 505);
+        
+        // Certificate Body - Use old date
+        const oldDate = this.getOldDate();
+        ctx.font = '16px Arial';
+        ctx.fillText('has filed its Articles of Incorporation and By-Laws with the', 80, 560);
+        ctx.fillText('Securities and Exchange Commission and is hereby registered', 80, 590);
+        ctx.fillText('as a Non-Stock, Non-Profit Corporation under the provisions', 80, 620);
+        ctx.fillText('of the Corporation Code of the Philippines.', 80, 650);
+        ctx.fillText('', 80, 680);
+        ctx.fillText(`Date of Registration: ${this.formatDate(oldDate)}`, 80, 710);
+        ctx.fillText('Term of Existence: Perpetual', 80, 740);
+        
+        // Purpose
+        ctx.font = 'bold 18px Arial';
+        ctx.fillText('Primary Purpose:', 80, 800);
+        ctx.font = '16px Arial';
+        ctx.fillText('• Promotion of charitable, educational, and social welfare activities', 100, 835);
+        ctx.fillText('• Community development and humanitarian services', 100, 865);
+        ctx.fillText('• Other lawful purposes not for profit', 100, 895);
+        
+        // Signature
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText('Given under my hand and the seal of the Commission:', 80, 935);
+        ctx.font = '17px Arial';
+        ctx.fillText('Director, Corporation Finance Department', 80, 965);
+        
+        // Official Seal
+        ctx.strokeStyle = '#0038A8';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(700, 945, 50, 0, 2 * Math.PI);
+        ctx.stroke();
+        ctx.font = 'bold 11px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('SEC', 700, 942);
+        ctx.fillText('PHILIPPINES', 700, 957);
         
         return this.canvas.toDataURL('image/jpeg', 0.95);
     }

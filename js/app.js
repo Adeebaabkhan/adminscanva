@@ -10,15 +10,24 @@ const DOCUMENT_TYPES = {
     'course_completion': 'Course Completion Certificate',
     'training': 'Teacher Training Certificate',
     'conference': 'Conference Attendance Certificate',
-    // ✅ NEW: Nonprofit certificates
+    // ✅ India Nonprofit certificates
     'nonprofit_12a': '12A Certificate (India)',
     'nonprofit_80g': '80G Certificate (India)',
     'nonprofit_darpan': 'NGO Darpan ID (India)',
     'nonprofit_fcra': 'FCRA Certificate (India)',
     'nonprofit_trust': 'Trust Deed (India)',
     'nonprofit_pan': 'PAN Card (India)',
+    // ✅ Western Countries
     'nonprofit_501c3': '501(c)(3) Certificate (USA)',
-    'nonprofit_uk': 'UK Charity Registration'
+    'nonprofit_uk': 'UK Charity Registration',
+    'nonprofit_canada': 'CRA Certificate (Canada)',
+    'nonprofit_australia': 'ACNC Certificate (Australia)',
+    // ✅ NEW: Countries WITHOUT Backend Database
+    'nonprofit_kenya': 'Kenya NGO Certificate',
+    'nonprofit_pakistan': 'Pakistan SECP Certificate',
+    'nonprofit_nepal': 'Nepal SWC Certificate',
+    'nonprofit_nigeria': 'Nigeria CAC Certificate',
+    'nonprofit_philippines': 'Philippines SEC Certificate'
 };
 
 const TEACHER_PROFESSIONS = [
@@ -42,18 +51,23 @@ let uploadedPhotos = [];
 let generatedDocuments = [];
 let schoolMode = null; // 'single' or 'multi'
 let performanceMode = true; // Enable performance optimizations
-let isNonprofitMode = false; // ✅ NEW: Track if nonprofit certificates are selected
+let isNonprofitMode = false; // ✅ Track if nonprofit certificates are selected
 
 // Initialize Faker with locale
 if (typeof faker !== 'undefined') {
     faker.setLocale('en');
 }
 
-// ✅ NEW: Check if nonprofit certificates are selected
+// ✅ Check if nonprofit certificates are selected
 function checkIfNonprofitMode() {
-    const nonprofitTypes = ['nonprofit_12a', 'nonprofit_80g', 'nonprofit_darpan', 
-                           'nonprofit_fcra', 'nonprofit_trust', 'nonprofit_pan', 
-                           'nonprofit_501c3', 'nonprofit_uk'];
+    const nonprofitTypes = [
+        'nonprofit_12a', 'nonprofit_80g', 'nonprofit_darpan', 
+        'nonprofit_fcra', 'nonprofit_trust', 'nonprofit_pan', 
+        'nonprofit_501c3', 'nonprofit_uk', 'nonprofit_canada', 'nonprofit_australia',
+        // ✅ NEW: Countries without backend database
+        'nonprofit_kenya', 'nonprofit_pakistan', 'nonprofit_nepal', 
+        'nonprofit_nigeria', 'nonprofit_philippines'
+    ];
     isNonprofitMode = selectedDocumentTypes.some(type => nonprofitTypes.includes(type));
     return isNonprofitMode;
 }
@@ -66,7 +80,7 @@ function nextStep(step) {
         updateProgressSteps(step);
         currentStep = step;
         
-        // ✅ NEW: Modify Step 2 based on document type
+        // ✅ Modify Step 2 based on document type
         if (step === 2) {
             checkIfNonprofitMode();
             if (isNonprofitMode) {
@@ -80,7 +94,7 @@ function nextStep(step) {
     }
 }
 
-// ✅ NEW: Update Step 2 for Nonprofit Certificates
+// ✅ Update Step 2 for Nonprofit Certificates
 function updateStep2ForNonprofit() {
     // Change header title
     const header = document.querySelector('#content-step2 .card-header h4');
@@ -95,7 +109,7 @@ function updateStep2ForNonprofit() {
     }
     
     // Hide school mode selection for nonprofits
-    const modeSelection = document.querySelector('#content-step2 .row.mb-4');
+    const modeSelection = document.getElementById('schoolModeSelectionButtons');
     if (modeSelection) {
         modeSelection.style.display = 'none';
     }
@@ -108,13 +122,13 @@ function updateStep2ForNonprofit() {
     
     // Update form labels and fields
     const schoolForms = document.querySelectorAll('.school-form');
-    if (schoolForms.length > 0) {
+    if (schoolForms.length > 0 || !schoolForms.length) {
         // Clear existing forms and generate nonprofit form
         generateNonprofitForm();
     }
 }
 
-// ✅ NEW: Generate Nonprofit Organization Form
+// ✅ Generate Nonprofit Organization Form
 function generateNonprofitForm() {
     const container = document.getElementById('schoolFormsContainer');
     container.innerHTML = '';
@@ -142,6 +156,11 @@ function generateNonprofitForm() {
                     <option value="United Kingdom">🇬🇧 United Kingdom</option>
                     <option value="Canada">🇨🇦 Canada</option>
                     <option value="Australia">🇦🇺 Australia</option>
+                    <option value="Kenya">🇰🇪 Kenya</option>
+                    <option value="Pakistan">🇵🇰 Pakistan</option>
+                    <option value="Nepal">🇳🇵 Nepal</option>
+                    <option value="Nigeria">🇳🇬 Nigeria</option>
+                    <option value="Philippines">🇵🇭 Philippines</option>
                 </select>
             </div>
             <div class="col-md-6 mb-3">
@@ -216,7 +235,7 @@ function updateProgressSteps(activeStep) {
         }
     });
     
-    // ✅ NEW: Update step 2 title based on mode
+    // ✅ Update step 2 title based on mode
     const step2Title = document.querySelector('#step2 .step-title');
     if (step2Title && isNonprofitMode) {
         step2Title.textContent = 'Organization Details';
@@ -224,7 +243,6 @@ function updateProgressSteps(activeStep) {
         step2Title.textContent = 'School Details';
     }
 }
-
 // Document Type Selection
 document.addEventListener('DOMContentLoaded', function() {
     const documentCards = document.querySelectorAll('.document-type-card');
@@ -302,162 +320,6 @@ function createSchoolForm(schoolNumber) {
     return formDiv;
 }
 
-// Auto-Generation Functions
-function autoGenerateSchoolName(button) {
-    const schoolForm = button.closest('.school-form');
-    const countrySelect = schoolForm.querySelector('.school-country');
-    const nameInput = schoolForm.querySelector('.school-name');
-    
-    const selectedCountry = countrySelect.value;
-    if (!selectedCountry || !COUNTRY_DATA[selectedCountry].schoolNames) {
-        // Use Faker.js or fallback names
-        if (typeof faker !== 'undefined') {
-            nameInput.value = faker.company.name() + ' School';
-        } else {
-            const fallbackNames = ['Springfield Elementary', 'Riverside High School', 'Oakwood Academy', 'Sunset Middle School', 'Pine Valley School'];
-            nameInput.value = fallbackNames[Math.floor(Math.random() * fallbackNames.length)];
-        }
-    } else {
-        // Use country-specific school names
-        const schoolNames = COUNTRY_DATA[selectedCountry].schoolNames;
-        nameInput.value = schoolNames[Math.floor(Math.random() * schoolNames.length)];
-    }
-    
-    // Add visual feedback
-    nameInput.classList.add('is-valid');
-    setTimeout(() => {
-        nameInput.classList.remove('is-valid');
-    }, 1000);
-}
-
-function autoGenerateLocation(button) {
-    const schoolForm = button.closest('.school-form');
-    const countrySelect = schoolForm.querySelector('.school-country');
-    const locationInput = schoolForm.querySelector('.school-location');
-    
-    const selectedCountry = countrySelect.value;
-    if (!selectedCountry || !COUNTRY_DATA[selectedCountry].cities) {
-        // Use Faker.js or fallback locations
-        if (typeof faker !== 'undefined') {
-            locationInput.value = faker.location.city();
-        } else {
-            const fallbackCities = ['Springfield', 'Riverside', 'Oakwood', 'Sunset Valley', 'Pine Ridge'];
-            locationInput.value = fallbackCities[Math.floor(Math.random() * fallbackCities.length)];
-        }
-    } else {
-        // Use country-specific cities
-        const cities = COUNTRY_DATA[selectedCountry].cities;
-        locationInput.value = cities[Math.floor(Math.random() * cities.length)];
-    }
-    
-    // Add visual feedback
-    locationInput.classList.add('is-valid');
-    setTimeout(() => {
-        locationInput.classList.remove('is-valid');
-    }, 1000);
-}
-
-function autoFillLocation(countrySelect) {
-    // Auto-fill location when country changes and location is empty
-    const schoolForm = countrySelect.closest('.school-form');
-    const locationInput = schoolForm.querySelector('.school-location');
-    
-    if (!locationInput.value.trim() && countrySelect.value && COUNTRY_DATA[countrySelect.value].cities) {
-        const cities = COUNTRY_DATA[countrySelect.value].cities;
-        locationInput.value = cities[Math.floor(Math.random() * cities.length)];
-    }
-}
-
-function autoGenerateAllSchools() {
-    const schoolForms = document.querySelectorAll('.school-form');
-    const countries = Object.keys(COUNTRY_DATA);
-    
-    schoolForms.forEach((form, index) => {
-        // Select a random country
-        const randomCountry = countries[Math.floor(Math.random() * countries.length)];
-        const countrySelect = form.querySelector('.school-country');
-        const nameInput = form.querySelector('.school-name');
-        const locationInput = form.querySelector('.school-location');
-        
-        // Set country
-        countrySelect.value = randomCountry;
-        
-        // Generate school name based on country
-        if (COUNTRY_DATA[randomCountry].schoolNames) {
-            const schoolNames = COUNTRY_DATA[randomCountry].schoolNames;
-            nameInput.value = schoolNames[Math.floor(Math.random() * schoolNames.length)];
-        } else if (typeof faker !== 'undefined') {
-            nameInput.value = faker.company.name() + ' School';
-        } else {
-            nameInput.value = `School ${index + 1} Academy`;
-        }
-        
-        // Generate location based on country
-        if (COUNTRY_DATA[randomCountry].cities) {
-            const cities = COUNTRY_DATA[randomCountry].cities;
-            locationInput.value = cities[Math.floor(Math.random() * cities.length)];
-        } else if (typeof faker !== 'undefined') {
-            locationInput.value = faker.location.city();
-        } else {
-            locationInput.value = `City ${index + 1}`;
-        }
-        
-        // Add visual feedback
-        [nameInput, locationInput, countrySelect].forEach(element => {
-            element.classList.add('is-valid');
-        });
-    });
-    
-    // Remove visual feedback after animation
-    setTimeout(() => {
-        schoolForms.forEach(form => {
-            form.querySelectorAll('.is-valid').forEach(element => {
-                element.classList.remove('is-valid');
-            });
-        });
-    }, 1500);
-    
-    showAlert('All schools auto-generated successfully! 🎉', 'success');
-}
-
-// Photo Upload Handling
-function previewPhotos() {
-    const fileInput = document.getElementById('teacherPhotos');
-    const previewContainer = document.getElementById('photoPreview');
-    
-    previewContainer.innerHTML = '';
-    uploadedPhotos = [];
-    
-    Array.from(fileInput.files).forEach((file, index) => {
-        if (file.type.startsWith('image/')) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    uploadedPhotos.push(img);
-                    
-                    const previewItem = document.createElement('div');
-                    previewItem.className = 'photo-preview-item';
-                    
-                    previewItem.innerHTML = `
-                        <img src="${e.target.result}" alt="Teacher Photo ${index + 1}">
-                        <button type="button" class="remove-photo" onclick="removePhoto(${index})">×</button>
-                    `;
-                    
-                    previewContainer.appendChild(previewItem);
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-}
-
-function removePhoto(index) {
-    uploadedPhotos.splice(index, 1);
-    previewPhotos(); // Refresh preview
-}
-
 // Validation
 function validateCurrentStep() {
     switch (currentStep) {
@@ -469,7 +331,7 @@ function validateCurrentStep() {
             }
             return true;
         case 2:
-            // ✅ NEW: Different validation for nonprofit vs teacher docs
+            // ✅ Different validation for nonprofit vs teacher docs
             if (checkIfNonprofitMode()) {
                 return validateNonprofitForm();
             } else {
@@ -480,7 +342,7 @@ function validateCurrentStep() {
     }
 }
 
-// ✅ NEW: Validate Nonprofit Organization Form
+// ✅ Validate Nonprofit Organization Form
 function validateNonprofitForm() {
     const form = document.querySelector('.school-form');
     if (!form) {
@@ -595,7 +457,7 @@ function generateAllDocuments() {
         showAlert(`🚀 Generating ${totalDocuments} ${docTypeText} with AI-powered content...`, 'info');
     }
     
-    // ✅ NEW: Generate nonprofit certificates or teacher documents
+    // ✅ Generate nonprofit certificates or teacher documents
     if (isNonprofitMode) {
         generateNonprofitCertificates(gridDiv, totalDocuments);
     } else {
@@ -603,7 +465,7 @@ function generateAllDocuments() {
     }
 }
 
-// ✅ NEW: Generate Nonprofit Certificates
+// ✅ Generate Nonprofit Certificates
 function generateNonprofitCertificates(gridDiv, totalDocuments) {
     const orgData = schoolsData[0]; // Get organization data
     
@@ -618,6 +480,7 @@ function generateNonprofitCertificates(gridDiv, totalDocuments) {
             try {
                 // Call appropriate nonprofit certificate generator
                 switch (docType) {
+                    // India
                     case 'nonprofit_12a':
                         documentDataURL = nonprofitGenerator.generate12ACertificate(orgData);
                         break;
@@ -636,11 +499,34 @@ function generateNonprofitCertificates(gridDiv, totalDocuments) {
                     case 'nonprofit_pan':
                         documentDataURL = nonprofitGenerator.generatePANCard(orgData);
                         break;
+                    // Western Countries
                     case 'nonprofit_501c3':
                         documentDataURL = nonprofitGenerator.generate501c3Certificate(orgData);
                         break;
                     case 'nonprofit_uk':
                         documentDataURL = nonprofitGenerator.generateUKCharityRegistration(orgData);
+                        break;
+                    case 'nonprofit_canada':
+                        documentDataURL = nonprofitGenerator.generateCanadaCRACertificate(orgData);
+                        break;
+                    case 'nonprofit_australia':
+                        documentDataURL = nonprofitGenerator.generateAustraliaACNCCertificate(orgData);
+                        break;
+                    // ✅ NEW: Countries WITHOUT Backend Database
+                    case 'nonprofit_kenya':
+                        documentDataURL = nonprofitGenerator.generateKenyaNGOCertificate(orgData);
+                        break;
+                    case 'nonprofit_pakistan':
+                        documentDataURL = nonprofitGenerator.generatePakistanSECPCertificate(orgData);
+                        break;
+                    case 'nonprofit_nepal':
+                        documentDataURL = nonprofitGenerator.generateNepalSWCCertificate(orgData);
+                        break;
+                    case 'nonprofit_nigeria':
+                        documentDataURL = nonprofitGenerator.generateNigeriaCACCertificate(orgData);
+                        break;
+                    case 'nonprofit_philippines':
+                        documentDataURL = nonprofitGenerator.generatePhilippinesSECCertificate(orgData);
                         break;
                 }
                 
@@ -671,7 +557,6 @@ function generateNonprofitCertificates(gridDiv, totalDocuments) {
         }, index * 100);
     });
 }
-
 // Generate Teacher Documents (existing function)
 function generateTeacherDocuments(gridDiv, totalDocuments, batchSize) {
     let docIndex = 0;
@@ -898,6 +783,161 @@ function generateTeacherId() {
     return `TCH${year}${sequence}`;
 }
 
+// Auto-Generation Functions
+function autoGenerateSchoolName(button) {
+    const schoolForm = button.closest('.school-form');
+    const countrySelect = schoolForm.querySelector('.school-country');
+    const nameInput = schoolForm.querySelector('.school-name');
+    
+    const selectedCountry = countrySelect.value;
+    if (!selectedCountry || !COUNTRY_DATA[selectedCountry].schoolNames) {
+        // Use Faker.js or fallback names
+        if (typeof faker !== 'undefined') {
+            nameInput.value = faker.company.name() + ' School';
+        } else {
+            const fallbackNames = ['Springfield Elementary', 'Riverside High School', 'Oakwood Academy', 'Sunset Middle School', 'Pine Valley School'];
+            nameInput.value = fallbackNames[Math.floor(Math.random() * fallbackNames.length)];
+        }
+    } else {
+        // Use country-specific school names
+        const schoolNames = COUNTRY_DATA[selectedCountry].schoolNames;
+        nameInput.value = schoolNames[Math.floor(Math.random() * schoolNames.length)];
+    }
+    
+    // Add visual feedback
+    nameInput.classList.add('is-valid');
+    setTimeout(() => {
+        nameInput.classList.remove('is-valid');
+    }, 1000);
+}
+
+function autoGenerateLocation(button) {
+    const schoolForm = button.closest('.school-form');
+    const countrySelect = schoolForm.querySelector('.school-country');
+    const locationInput = schoolForm.querySelector('.school-location');
+    
+    const selectedCountry = countrySelect.value;
+    if (!selectedCountry || !COUNTRY_DATA[selectedCountry].cities) {
+        // Use Faker.js or fallback locations
+        if (typeof faker !== 'undefined') {
+            locationInput.value = faker.location.city();
+        } else {
+            const fallbackCities = ['Springfield', 'Riverside', 'Oakwood', 'Sunset Valley', 'Pine Ridge'];
+            locationInput.value = fallbackCities[Math.floor(Math.random() * fallbackCities.length)];
+        }
+    } else {
+        // Use country-specific cities
+        const cities = COUNTRY_DATA[selectedCountry].cities;
+        locationInput.value = cities[Math.floor(Math.random() * cities.length)];
+    }
+    
+    // Add visual feedback
+    locationInput.classList.add('is-valid');
+    setTimeout(() => {
+        locationInput.classList.remove('is-valid');
+    }, 1000);
+}
+
+function autoFillLocation(countrySelect) {
+    // Auto-fill location when country changes and location is empty
+    const schoolForm = countrySelect.closest('.school-form');
+    const locationInput = schoolForm.querySelector('.school-location');
+    
+    if (!locationInput.value.trim() && countrySelect.value && COUNTRY_DATA[countrySelect.value].cities) {
+        const cities = COUNTRY_DATA[countrySelect.value].cities;
+        locationInput.value = cities[Math.floor(Math.random() * cities.length)];
+    }
+}
+
+function autoGenerateAllSchools() {
+    const schoolForms = document.querySelectorAll('.school-form');
+    const countries = Object.keys(COUNTRY_DATA);
+    
+    schoolForms.forEach((form, index) => {
+        // Select a random country
+        const randomCountry = countries[Math.floor(Math.random() * countries.length)];
+        const countrySelect = form.querySelector('.school-country');
+        const nameInput = form.querySelector('.school-name');
+        const locationInput = form.querySelector('.school-location');
+        
+        // Set country
+        countrySelect.value = randomCountry;
+        
+        // Generate school name based on country
+        if (COUNTRY_DATA[randomCountry].schoolNames) {
+            const schoolNames = COUNTRY_DATA[randomCountry].schoolNames;
+            nameInput.value = schoolNames[Math.floor(Math.random() * schoolNames.length)];
+        } else if (typeof faker !== 'undefined') {
+            nameInput.value = faker.company.name() + ' School';
+        } else {
+            nameInput.value = `School ${index + 1} Academy`;
+        }
+        
+        // Generate location based on country
+        if (COUNTRY_DATA[randomCountry].cities) {
+            const cities = COUNTRY_DATA[randomCountry].cities;
+            locationInput.value = cities[Math.floor(Math.random() * cities.length)];
+        } else if (typeof faker !== 'undefined') {
+            locationInput.value = faker.location.city();
+        } else {
+            locationInput.value = `City ${index + 1}`;
+        }
+        
+        // Add visual feedback
+        [nameInput, locationInput, countrySelect].forEach(element => {
+            element.classList.add('is-valid');
+        });
+    });
+    
+    // Remove visual feedback after animation
+    setTimeout(() => {
+        schoolForms.forEach(form => {
+            form.querySelectorAll('.is-valid').forEach(element => {
+                element.classList.remove('is-valid');
+            });
+        });
+    }, 1500);
+    
+    showAlert('All schools auto-generated successfully! 🎉', 'success');
+}
+
+// Photo Upload Handling
+function previewPhotos() {
+    const fileInput = document.getElementById('teacherPhotos');
+    const previewContainer = document.getElementById('photoPreview');
+    
+    previewContainer.innerHTML = '';
+    uploadedPhotos = [];
+    
+    Array.from(fileInput.files).forEach((file, index) => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    uploadedPhotos.push(img);
+                    
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'photo-preview-item';
+                    
+                    previewItem.innerHTML = `
+                        <img src="${e.target.result}" alt="Teacher Photo ${index + 1}">
+                        <button type="button" class="remove-photo" onclick="removePhoto(${index})">×</button>
+                    `;
+                    
+                    previewContainer.appendChild(previewItem);
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+}
+
+function removePhoto(index) {
+    uploadedPhotos.splice(index, 1);
+    previewPhotos(); // Refresh preview
+}
 // Download Functions
 function downloadDocument(index) {
     const doc = generatedDocuments[index];
@@ -1002,7 +1042,7 @@ function generateNew() {
     schoolsData = [];
     uploadedPhotos = [];
     generatedDocuments = [];
-    isNonprofitMode = false; // ✅ NEW: Reset nonprofit mode
+    isNonprofitMode = false; // ✅ Reset nonprofit mode
     
     // Reset form
     document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
@@ -1180,7 +1220,7 @@ function setSchoolMode(mode) {
     
     // Hide mode selection buttons after selection
     document.querySelectorAll('.card .btn').forEach(btn => {
-        if (btn.onclick.toString().includes('setSchoolMode')) {
+        if (btn.onclick && btn.onclick.toString().includes('setSchoolMode')) {
             btn.disabled = true;
             if (btn.onclick.toString().includes(mode)) {
                 btn.innerHTML = '<i class="fas fa-check me-2"></i>Selected';

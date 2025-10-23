@@ -1,4 +1,4 @@
-// Main Application Logic
+// Main Application Logic - COMPLETE & FIXED VERSION
 
 // Constants
 const DOCUMENT_TYPES = {
@@ -22,7 +22,7 @@ const DOCUMENT_TYPES = {
     'nonprofit_uk': 'UK Charity Registration',
     'nonprofit_canada': 'CRA Certificate (Canada)',
     'nonprofit_australia': 'ACNC Certificate (Australia)',
-    // ✅ NEW: Countries WITHOUT Backend Database
+    // ✅ Countries WITHOUT Backend Database
     'nonprofit_kenya': 'Kenya NGO Certificate',
     'nonprofit_pakistan': 'Pakistan SECP Certificate',
     'nonprofit_nepal': 'Nepal SWC Certificate',
@@ -58,17 +58,23 @@ if (typeof faker !== 'undefined') {
     faker.setLocale('en');
 }
 
-// ✅ Check if nonprofit certificates are selected
+// ✅ IMPROVED: Check if nonprofit certificates are selected
 function checkIfNonprofitMode() {
     const nonprofitTypes = [
         'nonprofit_12a', 'nonprofit_80g', 'nonprofit_darpan', 
         'nonprofit_fcra', 'nonprofit_trust', 'nonprofit_pan', 
         'nonprofit_501c3', 'nonprofit_uk', 'nonprofit_canada', 'nonprofit_australia',
-        // ✅ NEW: Countries without backend database
+        // Countries without backend database
         'nonprofit_kenya', 'nonprofit_pakistan', 'nonprofit_nepal', 
         'nonprofit_nigeria', 'nonprofit_philippines'
     ];
+    
     isNonprofitMode = selectedDocumentTypes.some(type => nonprofitTypes.includes(type));
+    
+    // Log for debugging
+    console.log('📋 Selected document types:', selectedDocumentTypes);
+    console.log('🏢 Nonprofit mode:', isNonprofitMode ? 'YES' : 'NO');
+    
     return isNonprofitMode;
 }
 
@@ -94,8 +100,10 @@ function nextStep(step) {
     }
 }
 
-// ✅ Update Step 2 for Nonprofit Certificates
+// ✅ FIXED: Update Step 2 for Nonprofit Certificates
 function updateStep2ForNonprofit() {
+    console.log('🔧 Updating Step 2 for Nonprofit Mode...');
+    
     // Change header title
     const header = document.querySelector('#content-step2 .card-header h4');
     if (header) {
@@ -108,10 +116,16 @@ function updateStep2ForNonprofit() {
         configText.textContent = 'Enter details for your nonprofit organization. All information will be used to generate professional certificates.';
     }
     
-    // Hide school mode selection for nonprofits
+    // Hide school mode selection buttons for nonprofits
     const modeSelection = document.getElementById('schoolModeSelectionButtons');
     if (modeSelection) {
         modeSelection.style.display = 'none';
+    }
+    
+    // Hide the mode selection alert
+    const schoolModeSelection = document.getElementById('schoolModeSelection');
+    if (schoolModeSelection) {
+        schoolModeSelection.classList.add('d-none');
     }
     
     // Show organization configuration immediately
@@ -120,73 +134,107 @@ function updateStep2ForNonprofit() {
         schoolConfig.classList.remove('d-none');
     }
     
-    // Update form labels and fields
-    const schoolForms = document.querySelectorAll('.school-form');
-    if (schoolForms.length > 0 || !schoolForms.length) {
-        // Clear existing forms and generate nonprofit form
-        generateNonprofitForm();
-    }
+    // Generate nonprofit form (this will replace any existing forms)
+    generateNonprofitForm();
 }
 
-// ✅ Generate Nonprofit Organization Form
+// ✅ FIXED: Generate Nonprofit Organization Form
 function generateNonprofitForm() {
+    console.log('📝 Generating Nonprofit Form...');
+    
     const container = document.getElementById('schoolFormsContainer');
-    container.innerHTML = '';
+    container.innerHTML = ''; // Clear all existing forms
     
     const formDiv = document.createElement('div');
     formDiv.className = 'school-form fade-in';
     
     formDiv.innerHTML = `
-        <div class="school-form-header">
+        <div class="school-form-header bg-warning">
             <h5 class="mb-0">
                 <i class="fas fa-building me-2"></i>Nonprofit Organization Details
             </h5>
+            <small class="text-muted d-block mt-1">For generating professional nonprofit certificates</small>
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Organization Name</label>
+                <label class="form-label fw-bold">
+                    <i class="fas fa-institution me-1"></i>Organization Name
+                </label>
                 <input type="text" class="form-control org-name" placeholder="e.g., Education for All Trust" required>
+                <small class="text-muted">Your nonprofit organization's legal name</small>
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Country</label>
-                <select class="form-select org-country" required>
+                <label class="form-label fw-bold">
+                    <i class="fas fa-flag me-1"></i>Country
+                </label>
+                <select class="form-select org-country" required onchange="autofillNonprofitSuggestions(this.value, this.closest('.school-form'))">
                     <option value="">Select Country</option>
-                    <option value="India">🇮🇳 India</option>
-                    <option value="USA">🇺🇸 USA</option>
-                    <option value="United Kingdom">🇬🇧 United Kingdom</option>
-                    <option value="Canada">🇨🇦 Canada</option>
-                    <option value="Australia">🇦🇺 Australia</option>
-                    <option value="Kenya">🇰🇪 Kenya</option>
-                    <option value="Pakistan">🇵🇰 Pakistan</option>
-                    <option value="Nepal">🇳🇵 Nepal</option>
-                    <option value="Nigeria">🇳🇬 Nigeria</option>
-                    <option value="Philippines">🇵🇭 Philippines</option>
+                    <optgroup label="🌟 Countries WITHOUT Database (Best Options)">
+                        <option value="Kenya">🇰🇪 Kenya (NO Database - Best!) ⭐</option>
+                        <option value="Pakistan">🇵🇰 Pakistan (NOT Public) ⭐</option>
+                        <option value="Nepal">🇳🇵 Nepal (Paper Only) ⭐</option>
+                        <option value="Nigeria">🇳🇬 Nigeria (Not Searchable)</option>
+                        <option value="Philippines">🇵🇭 Philippines (Unreliable DB)</option>
+                    </optgroup>
+                    <optgroup label="🌍 Other Countries">
+                        <option value="India">🇮🇳 India (6 Certificates)</option>
+                        <option value="USA">🇺🇸 USA (501c3)</option>
+                        <option value="United Kingdom">🇬🇧 United Kingdom</option>
+                        <option value="Canada">🇨🇦 Canada</option>
+                        <option value="Australia">🇦🇺 Australia</option>
+                    </optgroup>
                 </select>
+                <small class="text-muted">⚠️ Kenya, Pakistan, Nepal have NO verification!</small>
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Address</label>
+                <label class="form-label fw-bold">
+                    <i class="fas fa-map-marker-alt me-1"></i>Address
+                </label>
                 <input type="text" class="form-control org-address" placeholder="e.g., 123 Main Street" required>
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">City</label>
-                <input type="text" class="form-control org-city" placeholder="e.g., Mumbai" required>
+                <label class="form-label fw-bold">
+                    <i class="fas fa-city me-1"></i>City
+                </label>
+                <input type="text" class="form-control org-city" placeholder="e.g., Nairobi, Islamabad" required>
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">State/Province</label>
+                <label class="form-label fw-bold">
+                    <i class="fas fa-map me-1"></i>State/Province
+                </label>
                 <input type="text" class="form-control org-state" placeholder="e.g., Maharashtra" required>
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">PAN Number (for India)</label>
-                <input type="text" class="form-control org-pan" placeholder="e.g., AAATX1234A">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-id-card me-1"></i>PAN Number (India Only)
+                </label>
+                <input type="text" class="form-control org-pan" placeholder="Auto-generated if empty">
+                <small class="text-muted">Leave empty for auto-generation</small>
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Registration Number</label>
-                <input type="text" class="form-control org-reg" placeholder="e.g., MH/2024/123456">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-certificate me-1"></i>Registration Number (Optional)
+                </label>
+                <input type="text" class="form-control org-reg" placeholder="Auto-generated if empty">
+                <small class="text-muted">System will auto-generate</small>
             </div>
             <div class="col-md-6 mb-3">
-                <label class="form-label fw-bold">Organization Type</label>
-                <input type="text" class="form-control org-type" placeholder="e.g., Public Charitable Trust" value="Public Charitable Trust">
+                <label class="form-label fw-bold">
+                    <i class="fas fa-briefcase me-1"></i>Organization Type
+                </label>
+                <select class="form-select org-type">
+                    <option value="Public Charitable Trust">Public Charitable Trust</option>
+                    <option value="NGO">NGO (Non-Governmental Organization)</option>
+                    <option value="Society">Society</option>
+                    <option value="Section 8 Company">Section 8 Company</option>
+                    <option value="Foundation">Foundation</option>
+                    <option value="Non-Profit Organization">Non-Profit Organization</option>
+                </select>
             </div>
+        </div>
+        <div class="alert alert-success mt-3">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong>Ready to Generate!</strong> All registration numbers and dates will be automatically generated with authentic formatting.
         </div>
     `;
     
@@ -202,6 +250,32 @@ function generateNonprofitForm() {
     const numSchoolsRow = document.getElementById('numSchoolsRow');
     if (numSchoolsRow) {
         numSchoolsRow.style.display = 'none';
+    }
+    
+    console.log('✅ Nonprofit form generated successfully!');
+}
+
+// ✅ NEW: Auto-fill suggestions based on country
+function autofillNonprofitSuggestions(country, formDiv) {
+    const cityInput = formDiv.querySelector('.org-city');
+    const stateInput = formDiv.querySelector('.org-state');
+    
+    const suggestions = {
+        'Kenya': { city: 'Nairobi', state: 'Nairobi County' },
+        'Pakistan': { city: 'Islamabad', state: 'Islamabad Capital Territory' },
+        'Nepal': { city: 'Kathmandu', state: 'Bagmati Province' },
+        'Nigeria': { city: 'Abuja', state: 'Federal Capital Territory' },
+        'Philippines': { city: 'Manila', state: 'Metro Manila' },
+        'India': { city: 'Mumbai', state: 'Maharashtra' },
+        'USA': { city: 'New York', state: 'New York' },
+        'United Kingdom': { city: 'London', state: 'England' },
+        'Canada': { city: 'Toronto', state: 'Ontario' },
+        'Australia': { city: 'Sydney', state: 'New South Wales' }
+    };
+    
+    if (suggestions[country] && !cityInput.value.trim()) {
+        cityInput.placeholder = `e.g., ${suggestions[country].city}`;
+        stateInput.placeholder = `e.g., ${suggestions[country].state}`;
     }
 }
 
@@ -243,6 +317,7 @@ function updateProgressSteps(activeStep) {
         step2Title.textContent = 'School Details';
     }
 }
+
 // Document Type Selection
 document.addEventListener('DOMContentLoaded', function() {
     const documentCards = document.querySelectorAll('.document-type-card');
@@ -342,22 +417,26 @@ function validateCurrentStep() {
     }
 }
 
-// ✅ Validate Nonprofit Organization Form
+// ✅ FIXED: Validate Nonprofit Organization Form
 function validateNonprofitForm() {
+    console.log('🔍 Validating nonprofit form...');
+    
     const form = document.querySelector('.school-form');
     if (!form) {
         showAlert('Please fill in the organization details.', 'warning');
         return false;
     }
     
-    const orgName = form.querySelector('.org-name').value.trim();
-    const country = form.querySelector('.org-country').value;
-    const address = form.querySelector('.org-address').value.trim();
-    const city = form.querySelector('.org-city').value.trim();
-    const state = form.querySelector('.org-state').value.trim();
+    const orgName = form.querySelector('.org-name')?.value.trim();
+    const country = form.querySelector('.org-country')?.value;
+    const address = form.querySelector('.org-address')?.value.trim();
+    const city = form.querySelector('.org-city')?.value.trim();
+    const state = form.querySelector('.org-state')?.value.trim();
+    
+    console.log('Form values:', { orgName, country, address, city, state });
     
     if (!orgName || !country || !address || !city || !state) {
-        showAlert('Please fill all required organization fields.', 'warning');
+        showAlert('Please fill all required organization fields (Name, Country, Address, City, State).', 'warning');
         return false;
     }
     
@@ -368,12 +447,13 @@ function validateNonprofitForm() {
         address: address,
         city: city,
         state: state,
-        pan: form.querySelector('.org-pan').value.trim(),
-        registrationNo: form.querySelector('.org-reg').value.trim(),
-        type: form.querySelector('.org-type').value.trim() || 'Public Charitable Trust',
+        pan: form.querySelector('.org-pan')?.value.trim() || '',
+        registrationNo: form.querySelector('.org-reg')?.value.trim() || '',
+        type: form.querySelector('.org-type')?.value || 'Public Charitable Trust',
         documentsCount: 1 // One org = one set of certificates
     }];
     
+    console.log('✅ Organization data validated:', schoolsData[0]);
     return true;
 }
 
@@ -468,6 +548,7 @@ function generateAllDocuments() {
 // ✅ Generate Nonprofit Certificates
 function generateNonprofitCertificates(gridDiv, totalDocuments) {
     const orgData = schoolsData[0]; // Get organization data
+    console.log('🎨 Generating certificates for:', orgData);
     
     selectedDocumentTypes.forEach((docType, index) => {
         // Add placeholder immediately
@@ -478,6 +559,8 @@ function generateNonprofitCertificates(gridDiv, totalDocuments) {
             let documentDataURL;
             
             try {
+                console.log(`Generating ${docType}...`);
+                
                 // Call appropriate nonprofit certificate generator
                 switch (docType) {
                     // India
@@ -512,7 +595,7 @@ function generateNonprofitCertificates(gridDiv, totalDocuments) {
                     case 'nonprofit_australia':
                         documentDataURL = nonprofitGenerator.generateAustraliaACNCCertificate(orgData);
                         break;
-                    // ✅ NEW: Countries WITHOUT Backend Database
+                    // ✅ Countries WITHOUT Backend Database
                     case 'nonprofit_kenya':
                         documentDataURL = nonprofitGenerator.generateKenyaNGOCertificate(orgData);
                         break;
@@ -544,6 +627,8 @@ function generateNonprofitCertificates(gridDiv, totalDocuments) {
                 // Update placeholder with actual document
                 updateDocumentPlaceholder(placeholder, docData, generatedDocuments.length - 1);
                 
+                console.log(`✅ Generated ${docType} successfully!`);
+                
                 // Show completion message when all done
                 if (generatedDocuments.length === totalDocuments) {
                     showAlert(`🎉 Generated ${totalDocuments} nonprofit certificates successfully!`, 'success');
@@ -557,7 +642,7 @@ function generateNonprofitCertificates(gridDiv, totalDocuments) {
         }, index * 100);
     });
 }
-// Generate Teacher Documents (existing function)
+
 function generateTeacherDocuments(gridDiv, totalDocuments, batchSize) {
     let docIndex = 0;
     let documentIndex = 0;

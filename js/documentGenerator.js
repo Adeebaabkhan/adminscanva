@@ -9,7 +9,7 @@ class DocumentGenerator {
 
     // Generate Teacher ID Card
     generateIDCard(teacherData, schoolData, uploadedPhoto = null) {
-        // Set canvas size for ID card
+        // Set canvas size for ID card - ORIGINAL SIZE
         this.canvas.width = 600;
         this.canvas.height = 380;
         
@@ -160,8 +160,8 @@ class DocumentGenerator {
     // Generate Salary Receipt
     generateSalaryReceipt(teacherData, schoolData) {
         // Set canvas size for receipt - increased height for detailed breakdown
-        this.canvas.width = 700;
-        this.canvas.height = 850;
+        this.canvas.width = 850;
+        this.canvas.height = 1050;
         
         const ctx = this.ctx;
         const countryData = COUNTRY_DATA[schoolData.country];
@@ -170,32 +170,35 @@ class DocumentGenerator {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         
-        // Header
-        ctx.fillStyle = '#34495e';
-        ctx.fillRect(0, 0, this.canvas.width, 80);
+        // Header with school color
+        const headerGradient = ctx.createLinearGradient(0, 0, this.canvas.width, 100);
+        headerGradient.addColorStop(0, '#3d5a6c');
+        headerGradient.addColorStop(1, '#4a6b7f');
+        ctx.fillStyle = headerGradient;
+        ctx.fillRect(0, 0, this.canvas.width, 100);
         
-        // School logo area
+        // School logo box
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(15, 15, 50, 50);
-        ctx.strokeStyle = '#34495e';
+        ctx.fillRect(25, 20, 60, 60);
+        ctx.strokeStyle = '#3d5a6c';
         ctx.lineWidth = 2;
-        ctx.strokeRect(15, 15, 50, 50);
+        ctx.strokeRect(25, 20, 60, 60);
         
         const schoolAbbr = schoolData.name.split(' ').map(word => word[0]).join('').substring(0, 3).toUpperCase();
-        ctx.fillStyle = '#34495e';
-        ctx.font = 'bold 14px Arial';
+        ctx.fillStyle = '#3d5a6c';
+        ctx.font = 'bold 16px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(schoolAbbr, 40, 45);
+        ctx.fillText(schoolAbbr, 55, 55);
         
-        // Header text
+        // School name and title
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 18px Arial';
+        ctx.font = 'bold 22px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText(schoolData.name.toUpperCase(), 85, 30);
+        ctx.fillText(schoolData.name.toUpperCase(), 105, 40);
         
         ctx.fillStyle = '#ffd700';
-        ctx.font = 'bold 16px Arial';
-        ctx.fillText('SALARY SLIP', 85, 55);
+        ctx.font = 'bold 18px Arial';
+        ctx.fillText('SALARY SLIP', 105, 70);
         
         // Month and Year
         const today = new Date();
@@ -204,80 +207,86 @@ class DocumentGenerator {
         const currentYear = today.getFullYear();
         
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 14px Arial';
+        ctx.font = 'bold 16px Arial';
         ctx.textAlign = 'right';
-        ctx.fillText(`${currentMonth} ${currentYear}`, this.canvas.width - 20, 45);
+        ctx.fillText(`${currentMonth} ${currentYear}`, this.canvas.width - 30, 55);
         
-        // Receipt details
-        const receiptNo = `SAL/${schoolData.country.substring(0,2)}/${currentYear}/${Math.floor(Math.random() * 900000) + 100000}`;
+        // Slip details
+        const receiptNo = `SAL/In/${currentYear}/${Math.floor(Math.random() * 900000) + 100000}`;
         
-        ctx.fillStyle = '#34495e';
-        ctx.font = 'bold 11px Arial';
-        ctx.textAlign = 'left';
-        ctx.fillText(`Slip No: ${receiptNo}`, 20, 110);
-        ctx.textAlign = 'right';
-        ctx.fillText(`Payment Date: ${today.toLocaleDateString()}`, this.canvas.width - 20, 110);
-        
-        // Employee details section
-        ctx.fillStyle = '#2c3e50';
-        ctx.fillRect(20, 130, this.canvas.width - 40, 25);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 14px Arial';
-        ctx.textAlign = 'left';
-        ctx.fillText('EMPLOYEE DETAILS', 30, 148);
-        
-        ctx.fillStyle = '#34495e';
+        ctx.fillStyle = '#555555';
         ctx.font = '12px Arial';
-        let yPos = 175;
-        ctx.fillText(`Name: ${teacherData.name}`, 30, yPos);
-        ctx.fillText(`Employee ID: ${teacherData.id}`, 30, yPos + 20);
-        ctx.fillText(`Designation: ${teacherData.profession}`, 30, yPos + 40);
-        ctx.fillText(`Department: ${teacherData.profession.split(' ')[0]} Department`, 30, yPos + 60);
+        ctx.textAlign = 'left';
+        ctx.fillText(`Slip No: ${receiptNo}`, 30, 130);
+        ctx.textAlign = 'right';
+        ctx.fillText(`Payment Date: ${today.getDate()}/${today.getMonth() + 1}/${currentYear}`, this.canvas.width - 30, 130);
         
-        // Bank details
+        // Employee details section header
+        ctx.fillStyle = '#3d5a6c';
+        ctx.fillRect(25, 155, this.canvas.width - 50, 35);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 15px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('EMPLOYEE DETAILS', 35, 178);
+        
+        // Employee details content
+        ctx.fillStyle = '#333333';
+        ctx.font = '13px Arial';
+        let yPos = 215;
+        
+        // Left column
+        ctx.fillText(`Name: ${teacherData.name}`, 35, yPos);
+        ctx.fillText(`Employee ID: ${teacherData.id}`, 35, yPos + 25);
+        ctx.fillText(`Designation: ${teacherData.profession}`, 35, yPos + 50);
+        ctx.fillText(`Department: ${teacherData.profession.split(' ')[0]} Department`, 35, yPos + 75);
+        
+        // Right column
         const bankAccount = `****${Math.floor(Math.random() * 9000) + 1000}`;
         ctx.textAlign = 'right';
-        ctx.fillText(`Bank Account: ${bankAccount}`, this.canvas.width - 30, yPos);
-        ctx.fillText(`Payment Mode: Bank Transfer`, this.canvas.width - 30, yPos + 20);
-        ctx.fillText(`PAN: ${schoolData.country.substring(0,2).toUpperCase()}${Math.floor(Math.random() * 900000) + 100000}`, this.canvas.width - 30, yPos + 40);
+        ctx.fillText(`Bank Account: ${bankAccount}`, this.canvas.width - 35, yPos);
+        ctx.fillText(`Payment Mode: Bank Transfer`, this.canvas.width - 35, yPos + 25);
+        ctx.fillText(`PAN: ${schoolData.country.substring(0,2).toUpperCase()}${Math.floor(Math.random() * 900000) + 100000}`, this.canvas.width - 35, yPos + 50);
         
         // Calculate salary components
         const salaryRange = countryData.salaryRanges[teacherData.profession] || [50000, 80000];
         const baseSalary = Math.floor(Math.random() * (salaryRange[1] - salaryRange[0])) + salaryRange[0];
         
         // Earnings breakdown
-        const hra = Math.floor(baseSalary * 0.40); // 40% HRA
-        const da = Math.floor(baseSalary * 0.20); // 20% DA
-        const transport = Math.floor(baseSalary * 0.10); // 10% Transport
-        const medical = Math.floor(baseSalary * 0.08); // 8% Medical
-        const special = Math.floor(baseSalary * 0.12); // 12% Special
+        const hra = Math.floor(baseSalary * 0.40);
+        const da = Math.floor(baseSalary * 0.20);
+        const transport = Math.floor(baseSalary * 0.10);
+        const medical = Math.floor(baseSalary * 0.08);
+        const special = Math.floor(baseSalary * 0.12);
         
         const grossSalary = baseSalary + hra + da + transport + medical + special;
         
         // Deductions
         const pf = Math.floor(baseSalary * countryData.pfRate);
         const tax = Math.floor(grossSalary * countryData.taxRate);
-        const professionalTax = Math.floor(baseSalary * 0.02); // 2% Professional Tax
-        const insurance = Math.floor(baseSalary * 0.03); // 3% Insurance
+        const professionalTax = Math.floor(baseSalary * 0.02);
+        const insurance = Math.floor(baseSalary * 0.03);
         
         const totalDeductions = pf + tax + professionalTax + insurance;
         const netSalary = grossSalary - totalDeductions;
         
-        // Earnings table
-        yPos = 290;
-        ctx.fillStyle = '#27ae60';
-        ctx.fillRect(20, yPos, this.canvas.width - 40, 25);
+        // Earnings table header
+        yPos = 340;
+        ctx.fillStyle = '#28a745';
+        ctx.fillRect(25, yPos, this.canvas.width - 50, 35);
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 13px Arial';
+        ctx.font = 'bold 14px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText('EARNINGS', 30, yPos + 17);
+        ctx.fillText('EARNINGS', 35, yPos + 22);
         ctx.textAlign = 'right';
-        ctx.fillText('AMOUNT', this.canvas.width - 30, yPos + 17);
+        ctx.fillText('AMOUNT', this.canvas.width - 35, yPos + 22);
         
-        // Earnings items
-        ctx.fillStyle = '#34495e';
-        ctx.font = '12px Arial';
-        yPos += 35;
+        // Earnings items with light background
+        ctx.fillStyle = '#f8f9fa';
+        ctx.fillRect(25, yPos + 35, this.canvas.width - 50, 180);
+        
+        ctx.fillStyle = '#555555';
+        ctx.font = '13px Arial';
+        yPos += 60;
         
         const earnings = [
             ['Basic Salary', baseSalary],
@@ -290,43 +299,41 @@ class DocumentGenerator {
         
         ctx.textAlign = 'left';
         earnings.forEach(([label, amount]) => {
-            ctx.fillText(label, 30, yPos);
+            ctx.fillText(label, 35, yPos);
             ctx.textAlign = 'right';
-            ctx.fillText(`${countryData.currency}${amount.toLocaleString()}`, this.canvas.width - 30, yPos);
+            ctx.fillText(`${countryData.currency}${amount.toLocaleString()}`, this.canvas.width - 35, yPos);
             ctx.textAlign = 'left';
-            yPos += 22;
+            yPos += 28;
         });
         
-        // Gross salary line
-        ctx.strokeStyle = '#27ae60';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(30, yPos);
-        ctx.lineTo(this.canvas.width - 30, yPos);
-        ctx.stroke();
-        
-        yPos += 20;
-        ctx.fillStyle = '#27ae60';
-        ctx.font = 'bold 13px Arial';
-        ctx.fillText('Gross Salary', 30, yPos);
-        ctx.textAlign = 'right';
-        ctx.fillText(`${countryData.currency}${grossSalary.toLocaleString()}`, this.canvas.width - 30, yPos);
-        
-        // Deductions table
-        yPos += 40;
-        ctx.fillStyle = '#e74c3c';
-        ctx.fillRect(20, yPos, this.canvas.width - 40, 25);
+        // Gross salary
+        yPos += 10;
+        ctx.fillStyle = '#28a745';
+        ctx.fillRect(25, yPos - 5, this.canvas.width - 50, 30);
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 13px Arial';
-        ctx.textAlign = 'left';
-        ctx.fillText('DEDUCTIONS', 30, yPos + 17);
+        ctx.font = 'bold 14px Arial';
+        ctx.fillText('Gross Salary', 35, yPos + 15);
         ctx.textAlign = 'right';
-        ctx.fillText('AMOUNT', this.canvas.width - 30, yPos + 17);
+        ctx.fillText(`${countryData.currency}${grossSalary.toLocaleString()}`, this.canvas.width - 35, yPos + 15);
         
-        // Deductions items
-        ctx.fillStyle = '#34495e';
-        ctx.font = '12px Arial';
-        yPos += 35;
+        // Deductions table header
+        yPos += 55;
+        ctx.fillStyle = '#dc3545';
+        ctx.fillRect(25, yPos, this.canvas.width - 50, 35);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('DEDUCTIONS', 35, yPos + 22);
+        ctx.textAlign = 'right';
+        ctx.fillText('AMOUNT', this.canvas.width - 35, yPos + 22);
+        
+        // Deductions items with light background
+        ctx.fillStyle = '#f8f9fa';
+        ctx.fillRect(25, yPos + 35, this.canvas.width - 50, 130);
+        
+        ctx.fillStyle = '#555555';
+        ctx.font = '13px Arial';
+        yPos += 60;
         
         const deductions = [
             ['Provident Fund (PF)', pf],
@@ -337,98 +344,89 @@ class DocumentGenerator {
         
         ctx.textAlign = 'left';
         deductions.forEach(([label, amount]) => {
-            ctx.fillText(label, 30, yPos);
+            ctx.fillText(label, 35, yPos);
             ctx.textAlign = 'right';
-            ctx.fillText(`${countryData.currency}${amount.toLocaleString()}`, this.canvas.width - 30, yPos);
+            ctx.fillText(`${countryData.currency}${amount.toLocaleString()}`, this.canvas.width - 35, yPos);
             ctx.textAlign = 'left';
-            yPos += 22;
+            yPos += 28;
         });
         
-        // Total deductions line
-        ctx.strokeStyle = '#e74c3c';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(30, yPos);
-        ctx.lineTo(this.canvas.width - 30, yPos);
-        ctx.stroke();
-        
-        yPos += 20;
-        ctx.fillStyle = '#e74c3c';
-        ctx.font = 'bold 13px Arial';
-        ctx.fillText('Total Deductions', 30, yPos);
+        // Total deductions
+        yPos += 10;
+        ctx.fillStyle = '#dc3545';
+        ctx.fillRect(25, yPos - 5, this.canvas.width - 50, 30);
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 14px Arial';
+        ctx.fillText('Total Deductions', 35, yPos + 15);
         ctx.textAlign = 'right';
-        ctx.fillText(`${countryData.currency}${totalDeductions.toLocaleString()}`, this.canvas.width - 30, yPos);
+        ctx.fillText(`${countryData.currency}${totalDeductions.toLocaleString()}`, this.canvas.width - 35, yPos + 15);
         
         // Net salary box
-        yPos += 30;
+        yPos += 50;
         ctx.fillStyle = '#1976d2';
-        ctx.fillRect(20, yPos, this.canvas.width - 40, 40);
+        ctx.fillRect(25, yPos, this.canvas.width - 50, 45);
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 16px Arial';
+        ctx.font = 'bold 18px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText('NET SALARY (Take Home)', 30, yPos + 25);
+        ctx.fillText('NET SALARY (Take Home)', 35, yPos + 28);
         ctx.textAlign = 'right';
-        ctx.fillText(`${countryData.currency}${netSalary.toLocaleString()}`, this.canvas.width - 30, yPos + 25);
+        ctx.fillText(`${countryData.currency}${netSalary.toLocaleString()}`, this.canvas.width - 35, yPos + 28);
         
         // YTD Information
-        yPos += 60;
-        const ytdGross = grossSalary * today.getMonth();
-        const ytdDeductions = totalDeductions * today.getMonth();
-        const ytdNet = netSalary * today.getMonth();
+        yPos += 70;
+        const ytdGross = grossSalary * (today.getMonth() + 1);
+        const ytdDeductions = totalDeductions * (today.getMonth() + 1);
+        const ytdNet = netSalary * (today.getMonth() + 1);
         
-        ctx.fillStyle = '#34495e';
-        ctx.font = 'bold 12px Arial';
-        ctx.textAlign = 'left';
-        ctx.fillText('Year to Date (YTD) Summary:', 30, yPos);
-        
-        ctx.font = '11px Arial';
-        yPos += 20;
-        ctx.fillText(`YTD Gross: ${countryData.currency}${ytdGross.toLocaleString()}`, 30, yPos);
-        ctx.fillText(`YTD Deductions: ${countryData.currency}${ytdDeductions.toLocaleString()}`, 230, yPos);
-        ctx.fillText(`YTD Net: ${countryData.currency}${ytdNet.toLocaleString()}`, 450, yPos);
-        
-        // Payment confirmation
-        yPos += 35;
-        ctx.strokeStyle = '#27ae60';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(20, yPos, this.canvas.width - 40, 60);
-        
-        ctx.fillStyle = '#27ae60';
-        ctx.fillRect(20, yPos, this.canvas.width - 40, 25);
-        
-        ctx.fillStyle = '#ffffff';
+        ctx.fillStyle = '#333333';
         ctx.font = 'bold 13px Arial';
         ctx.textAlign = 'left';
-        ctx.fillText('✓ PAYMENT PROCESSED', 30, yPos + 17);
+        ctx.fillText('Year to Date (YTD) Summary:', 35, yPos);
         
-        ctx.fillStyle = '#000000';
-        ctx.font = '11px Arial';
-        ctx.fillText(`Transaction ID: TXN${Math.floor(Math.random() * 9000000) + 1000000}`, 30, yPos + 40);
-        ctx.fillText(`Bank Reference: REF${Math.floor(Math.random() * 900000) + 100000}`, 30, yPos + 55);
+        ctx.font = '12px Arial';
+        ctx.fillStyle = '#555555';
+        yPos += 25;
+        ctx.fillText(`YTD Gross: ${countryData.currency}${ytdGross.toLocaleString()}`, 35, yPos);
+        ctx.fillText(`YTD Deductions: ${countryData.currency}${ytdDeductions.toLocaleString()}`, 300, yPos);
+        ctx.fillText(`YTD Net: ${countryData.currency}${ytdNet.toLocaleString()}`, 580, yPos);
         
-        // Digital signature
-        ctx.fillStyle = '#e74c3c';
+        // Payment confirmation
+        yPos += 45;
+        ctx.fillStyle = '#28a745';
+        ctx.fillRect(25, yPos, this.canvas.width - 50, 35);
+        
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('✓ PAYMENT PROCESSED', 35, yPos + 22);
+        
+        // Transaction details
+        ctx.fillStyle = '#f8f9fa';
+        ctx.fillRect(25, yPos + 35, this.canvas.width - 50, 50);
+        
+        ctx.fillStyle = '#333333';
+        ctx.font = '12px Arial';
+        ctx.fillText(`Transaction ID: TXN${Math.floor(Math.random() * 9000000) + 1000000}`, 35, yPos + 58);
+        
+        ctx.fillStyle = '#dc3545';
         ctx.font = 'bold 11px Arial';
         ctx.textAlign = 'right';
-        ctx.fillText('Digitally Signed', this.canvas.width - 30, yPos + 40);
-        ctx.fillStyle = '#000000';
-        ctx.font = '10px Arial';
-        const signatory = countryData.signatories[Math.floor(Math.random() * countryData.signatories.length)];
-        ctx.fillText(`By: ${signatory}`, this.canvas.width - 30, yPos + 55);
+        ctx.fillText('Digitally Signed', this.canvas.width - 35, yPos + 58);
         
         // Footer
-        ctx.fillStyle = '#7f8c8d';
-        ctx.font = '9px Arial';
+        ctx.fillStyle = '#999999';
+        ctx.font = '10px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText('This is a computer-generated document and does not require a physical signature', this.canvas.width / 2, this.canvas.height - 30);
-        ctx.fillText(`Generated on: ${today.toLocaleDateString()} | ${schoolData.country} | Confidential Document`, this.canvas.width / 2, this.canvas.height - 15);
+        ctx.fillText('This is a computer-generated document and does not require a physical signature', this.canvas.width / 2, this.canvas.height - 35);
+        ctx.fillText(`Generated on: ${today.toLocaleDateString()} | ${schoolData.country} | Confidential Document`, this.canvas.width / 2, this.canvas.height - 20);
         
         return this.canvas.toDataURL('image/jpeg', 0.9);
     }
 
     // Generate Employment Certificate
+    // Generate Employment Certificate
     generateCertificate(teacherData, schoolData) {
-        // Set canvas size for certificate
+        // Set canvas size for certificate - ORIGINAL SIZE
         this.canvas.width = 600;
         this.canvas.height = 400;
         
@@ -507,6 +505,161 @@ class DocumentGenerator {
     // Set uploaded photos
     setUploadedPhotos(photos) {
         this.uploadedPhotos = photos;
+    }
+
+    // Generate Student ID Card
+    generateStudentIDCard(studentData, schoolData, uploadedPhoto = null) {
+        // Set canvas size for student ID card
+        this.canvas.width = 600;
+        this.canvas.height = 380;
+        
+        const ctx = this.ctx;
+        
+        // Clear canvas
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Header background
+        const gradient = ctx.createLinearGradient(0, 0, this.canvas.width, 80);
+        gradient.addColorStop(0, '#1e3a5f');
+        gradient.addColorStop(1, '#2c5282');
+        
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, this.canvas.width, 80);
+        
+        // School logo area
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(15, 10, 55, 55);
+        ctx.strokeStyle = '#1e3a5f';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(15, 10, 55, 55);
+        
+        // School abbreviation in logo
+        const schoolAbbr = schoolData.name.split(' ').map(word => word[0]).join('').substring(0, 3).toUpperCase();
+        ctx.fillStyle = '#1e3a5f';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(schoolAbbr, 42, 42);
+        
+        // School name in header
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 18px Arial';
+        ctx.textAlign = 'left';
+        const schoolName = schoolData.name.toUpperCase();
+        if (schoolName.length > 35) {
+            const words = schoolName.split(' ');
+            const mid = Math.floor(words.length / 2);
+            ctx.fillText(words.slice(0, mid).join(' '), 85, 28);
+            ctx.font = '14px Arial';
+            ctx.fillText(words.slice(mid).join(' '), 85, 50);
+        } else {
+            ctx.fillText(schoolName, 85, 40);
+        }
+        
+        // ID Card title
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'right';
+        ctx.fillText('STUDENT', this.canvas.width - 20, 25);
+        ctx.fillText('ID CARD', this.canvas.width - 20, 45);
+        ctx.fillStyle = '#ffd700';
+        ctx.font = '12px Arial';
+        ctx.fillText(schoolData.country, this.canvas.width - 20, 65);
+        
+        // Student photo
+        const photoX = 30;
+        const photoY = 100;
+        const photoW = 150;
+        const photoH = 180;
+        
+        if (uploadedPhoto) {
+            ctx.drawImage(uploadedPhoto, photoX, photoY, photoW, photoH);
+        } else {
+            // Default photo placeholder
+            ctx.fillStyle = '#e0e0e0';
+            ctx.fillRect(photoX, photoY, photoW, photoH);
+            ctx.fillStyle = '#666666';
+            ctx.font = '14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Student', photoX + photoW/2, photoY + photoH/2 - 10);
+            ctx.fillText('Photo', photoX + photoW/2, photoY + photoH/2 + 10);
+        }
+        
+        // Photo border
+        ctx.strokeStyle = '#1e3a5f';
+        ctx.lineWidth = 3;
+        ctx.strokeRect(photoX - 2, photoY - 2, photoW + 4, photoH + 4);
+        
+        // Student information
+        const infoX = 200;
+        const infoY = 100;
+        
+        ctx.fillStyle = '#333333';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('Name:', infoX, infoY + 20);
+        
+        ctx.fillStyle = '#1e3a5f';
+        ctx.font = 'bold 20px Arial';
+        ctx.fillText(studentData.name.toUpperCase(), infoX, infoY + 50);
+        
+        ctx.fillStyle = '#333333';
+        ctx.font = 'bold 14px Arial';
+        ctx.fillText('Student ID:', infoX, infoY + 80);
+        
+        ctx.fillStyle = '#dc3545';
+        ctx.font = 'bold 16px Arial';
+        ctx.fillText(studentData.id, infoX, infoY + 105);
+        
+        ctx.fillStyle = '#333333';
+        ctx.font = 'bold 14px Arial';
+        ctx.fillText('Grade/Class:', infoX, infoY + 135);
+        
+        ctx.font = '14px Arial';
+        ctx.fillText(studentData.grade, infoX, infoY + 160);
+        
+        ctx.font = 'bold 14px Arial';
+        ctx.fillText('Email:', infoX, infoY + 185);
+        
+        ctx.font = '12px Arial';
+        ctx.fillText(studentData.email, infoX, infoY + 205);
+        
+        // Valid dates
+        const today = new Date();
+        const expiry = new Date(today.getFullYear() + 1, 5, 30); // End of academic year
+        
+        ctx.font = '12px Arial';
+        ctx.fillText(`Issue Date: ${today.toLocaleDateString()}`, 30, 320);
+        ctx.fillText(`Valid Until: ${expiry.toLocaleDateString()}`, 30, 340);
+        
+        // Student ID number
+        ctx.fillText(`Academic Year: ${today.getFullYear()}-${today.getFullYear() + 1}`, 300, 320);
+        
+        // Barcode placeholder
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(this.canvas.width - 110, this.canvas.height - 100, 80, 40);
+        ctx.strokeStyle = '#1e3a5f';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(this.canvas.width - 110, this.canvas.height - 100, 80, 40);
+        
+        // Barcode lines
+        ctx.fillStyle = '#000000';
+        for (let i = 0; i < 15; i++) {
+            const width = Math.random() > 0.5 ? 3 : 2;
+            ctx.fillRect(this.canvas.width - 105 + i * 5, this.canvas.height - 95, width, 30);
+        }
+        
+        ctx.fillStyle = '#1e3a5f';
+        ctx.font = '10px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(studentData.id, this.canvas.width - 70, this.canvas.height - 50);
+        
+        // Security text
+        ctx.fillStyle = '#1e3a5f';
+        ctx.font = '10px Arial';
+        ctx.textAlign = 'right';
+        ctx.fillText('AUTHORIZED DOCUMENT', this.canvas.width - 20, this.canvas.height - 20);
+        
+        return this.canvas.toDataURL('image/jpeg', 0.9);
     }
 
     // Generate Academic Transcript

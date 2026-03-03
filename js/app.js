@@ -3,6 +3,7 @@
 // Constants
 const DOCUMENT_TYPES = {
     'id_card': 'Teacher ID Card',
+    'student_id': 'Student ID Card',
     'receipt': 'Salary Receipt',
     'certificate': 'Employment Certificate',
     'transcript': 'Academic Transcript',
@@ -668,6 +669,16 @@ function generateTeacherDocuments(gridDiv, totalDocuments, batchSize) {
                         switch (docType) {
                             case 'id_card':
                                 documentDataURL = documentGenerator.generateIDCard(teacherData, school, photo);
+                                break;
+                            case 'student_id':
+                                // Generate student data from teacher data
+                                const studentData = {
+                                    name: teacherData.name,
+                                    id: `STU${new Date().getFullYear()}${Math.floor(Math.random() * 9000) + 1000}`,
+                                    grade: ['Grade 9', 'Grade 10', 'Grade 11', 'Grade 12', 'Year 1', 'Year 2'][Math.floor(Math.random() * 6)],
+                                    email: teacherData.name.toLowerCase().replace(' ', '.') + '@student.edu'
+                                };
+                                documentDataURL = documentGenerator.generateStudentIDCard(studentData, school, photo);
                                 break;
                             case 'receipt':
                                 documentDataURL = documentGenerator.generateSalaryReceipt(teacherData, school);

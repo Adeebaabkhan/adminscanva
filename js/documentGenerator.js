@@ -1130,6 +1130,7 @@ class DocumentGenerator {
     }
 
     // Helper method to format dates
+    
     formatDate(date) {
         return date.toLocaleDateString('en-US', {
             year: 'numeric',

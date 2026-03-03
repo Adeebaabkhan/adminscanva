@@ -33,7 +33,7 @@ const DOCUMENT_TYPES = {
 const TEACHER_PROFESSIONS = [
     'Primary Teacher', 'Math Teacher', 'Science Teacher', 'English Teacher',
     'History Teacher', 'Art Teacher', 'Music Teacher', 'Physical Education Teacher',
-    'Computer Science Teacher', 'Special Education Teacher', 'Vice Principal', 'Assistant Principal'
+    'Computer Science Teacher', 'Special Education Teacher', 'Telugu Teacher', 'Hindi Teacher'
 ];
 
 // Sample names for fallback when Faker.js is not available
@@ -832,7 +832,7 @@ function updateDocumentPlaceholder(placeholder, docData, index) {
 
 function generateTeacherData() {
     const profession = TEACHER_PROFESSIONS[Math.floor(Math.random() * TEACHER_PROFESSIONS.length)];
-    const teacherId = generateTeacherId();
+    const teacherId = generateTeacherId(profession);
     
     // Use AI-powered name generation based on selected countries with fallbacks
     let aiGeneratedName;
@@ -862,10 +862,30 @@ function generateTeacherData() {
     };
 }
 
-function generateTeacherId() {
+function generateTeacherId(profession) {
     const year = new Date().getFullYear();
     const sequence = Math.floor(Math.random() * 9000) + 1000;
-    return `TCH${year}${sequence}`;
+    
+    // Map ALL professions to subject-based prefixes
+    const subjectPrefixes = {
+        'Primary Teacher': 'PRIMARY',
+        'Math Teacher': 'MATHS',
+        'Science Teacher': 'SCIENCE',
+        'English Teacher': 'ENGLISH',
+        'History Teacher': 'HISTORY',
+        'Art Teacher': 'ART',
+        'Music Teacher': 'MUSIC',
+        'Physical Education Teacher': 'PE',
+        'Computer Science Teacher': 'COMPUTER',
+        'Special Education Teacher': 'SPECIAL',
+        'Telugu Teacher': 'TELUGU',
+        'Hindi Teacher': 'HINDI'
+    };
+    
+    // Get subject prefix or use generic TEACHER for unknown professions
+    const prefix = subjectPrefixes[profession] || 'TEACHER';
+    
+    return `${prefix}${year}${sequence}`;
 }
 
 // Auto-Generation Functions

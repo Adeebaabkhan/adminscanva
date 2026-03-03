@@ -1007,6 +1007,53 @@ function autoGenerateAllSchools() {
 }
 
 // Photo Upload Handling
+let useDefaultPhoto = true;
+let defaultPhotoImage = null;
+
+// Toggle between default and custom photo
+function togglePhotoOption() {
+    const defaultOption = document.getElementById('photoDefault');
+    const uploadOption = document.getElementById('photoUpload');
+    const defaultPreview = document.getElementById('defaultPhotoPreview');
+    const customUpload = document.getElementById('customPhotoUpload');
+    
+    if (defaultOption.checked) {
+        useDefaultPhoto = true;
+        defaultPreview.style.display = 'block';
+        customUpload.style.display = 'none';
+        uploadedPhotos = [];
+        loadDefaultPhoto();
+    } else {
+        useDefaultPhoto = false;
+        defaultPreview.style.display = 'none';
+        customUpload.style.display = 'block';
+    }
+}
+
+// Load default photo
+function loadDefaultPhoto() {
+    if (!defaultPhotoImage) {
+        const img = new Image();
+        img.onload = function() {
+            defaultPhotoImage = img;
+            uploadedPhotos = [img]; // Set as the only photo
+        };
+        img.onerror = function() {
+            console.warn('Default photo not found, will use placeholder');
+            defaultPhotoImage = null;
+            uploadedPhotos = [];
+        };
+        img.src = 'default-teacher.jpg';
+    } else {
+        uploadedPhotos = [defaultPhotoImage];
+    }
+}
+
+// Initialize default photo on page load
+window.addEventListener('DOMContentLoaded', function() {
+    loadDefaultPhoto();
+});
+
 function previewPhotos() {
     const fileInput = document.getElementById('teacherPhotos');
     const previewContainer = document.getElementById('photoPreview');
